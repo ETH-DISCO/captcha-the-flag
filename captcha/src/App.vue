@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import Captcha from './components/Captcha.vue';
+import Captcha from "./components/Captcha.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
     Captcha,
   },

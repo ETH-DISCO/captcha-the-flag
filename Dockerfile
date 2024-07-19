@@ -1,21 +1,14 @@
-FROM node:16
+FROM node:21
 
+ENV DEBIAN_FRONTEND=noninteractive
 
-# FROM ubuntu:20.04
+# don't time out on large packages
+RUN npm config set fetch-retry-maxtimeout 6000000
+RUN npm config set fetch-retry-mintimeout 1000000
 
-# ENV DEBIAN_FRONTEND=noninteractive
+# cd captcha
+# npm install
 
-# RUN apt-get update && apt-get install -y git npm curl wget python3 python3-pip
-# RUN npm install -g n
-# RUN n stable
-# RUN npm install -g npm@17
-# RUN npm install -g yarn
-
-# RUN yarn global add @vue/cli
-# RUN yarn global add @vue/cli-init
-# RUN yarn global add @vue/cli-service-global
-# RUN yarn global add @vue/cli-plugin-babel
-# RUN yarn global add @vue/cli-plugin
 
 
 
