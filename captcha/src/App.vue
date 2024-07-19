@@ -2,14 +2,18 @@
   <div>
     <p>solve me if you can!</p>
 
-    <div style="width: 304px; height: 78px" @click="_show" ref="container">
+    <!-- STEP 1: click on button, call open_captcha() function, open the captcha modal -->
+    <div style="width: 304px; height: 78px" @click="open_captcha" ref="container">
+
       <div id="rc-anchor-alert" class="rc-anchor-alert"></div>
       <div id="rc-anchor-container" class="rc-anchor rc-anchor-normal rc-anchor-light" style="position: relative">
-        <div id="recaptcha-accessible-status" class="rc-anchor-aria-status" aria-hidden="true"> Please verify yourself. </div>
+        <div id="recaptcha-accessible-status" class="rc-anchor-aria-status" aria-hidden="true">Please verify yourself.</div>
         <div class="rc-anchor-error-msg-container" style="display: none">
           <span class="rc-anchor-error-msg" aria-hidden="true"></span>
         </div>
         <div class="rc-anchor-content">
+          
+          <!-- loading spinner-->
           <div class="rc-inline-block">
             <div class="rc-anchor-center-container">
               <div class="rc-anchor-center-item rc-anchor-checkbox-holder">
@@ -17,18 +21,18 @@
                   <div
                     class="recaptcha-checkbox-border"
                     role="presentation"
-                    v-show="!is_loading"
+                    v-show="!is_loading_modal"
                   ></div>
                   <div
                     class="recaptcha-checkbox-borderAnimation"
                     role="presentation"
-                    :style="is_loading ? { 'background-position': '-28px -588px' } : {}"
+                    :style="is_loading_modal ? { 'background-position': '-28px -588px' } : {}"
                   ></div>
                   <div
                     class="recaptcha-checkbox-spinner"
                     role="presentation"
-                    v-show="is_loading"
-                    :style="{ 'animation-play-state': 'running', opacity: is_loading ? 1 : 0, transform: 'scale(0)'}"
+                    v-show="is_loading_modal"
+                    :style="{ 'animation-play-state': 'running', opacity: is_loading_modal ? 1 : 0, transform: 'scale(0)'}"
                   >
                     <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
                   </div>
@@ -37,22 +41,19 @@
               </div>
             </div>
           </div>
+
+          <!-- 'i'm not a robot' title -->
           <div class="rc-inline-block">
             <div class="rc-anchor-center-container">
-              <label
-                class="rc-anchor-center-item rc-anchor-checkbox-label"
-                aria-hidden="true"
-                role="presentation"
-                id="recaptcha-anchor-label"
-                ><span
-                  aria-live="polite"
-                  aria-labelledby="recaptcha-accessible-status"
-                ></span
-                >I'm not a robot</label
-              >
+              <label class="rc-anchor-center-item rc-anchor-checkbox-label" aria-hidden="true" role="presentation" id="recaptcha-anchor-label">
+                <span aria-live="polite" aria-labelledby="recaptcha-accessible-status"></span>
+                I'm not a robot
+              </label>
             </div>
           </div>
         </div>
+
+        <!-- recaptcha logo -->
         <div class="rc-anchor-normal-footer">
           <div class="rc-anchor-logo-portrait" aria-hidden="true" role="presentation">
             <div class="rc-anchor-logo-img rc-anchor-logo-img-portrait"></div>
@@ -67,58 +68,26 @@
       </div>
     </div>
 
+
+    <!-- transparent layer covering entire page, close the modal when clicked -->
     <div
-      @click="el_show = false"
-      style="
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: 0px;
-        left: 0px;
-        z-index: 2000000000;
-        background-color: rgb(255, 255, 255);
-        opacity: 0;
-      "
-      v-show="el_show"
+      @click="show_modal = false"
+      style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0;"
+      v-show="show_modal"
     ></div>
+
 
     <div :style="style_selector">
       <!-- mask layer -->
       <div
         v-show="el_arrow"
         class="g-recaptcha-bubble-arrow"
-        style="
-          border-width: 11px;
-          border-style: solid;
-          border-color: transparent rgb(204, 204, 204) transparent transparent;
-          border-image: initial;
-          width: 0px;
-          height: 0px;
-          position: absolute;
-          pointer-events: none;
-          margin-top: -11px;
-          z-index: 2000000000;
-          top: 35px;
-          right: 100%;
-        "
+        style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%;"
       ></div>
       <div
         v-show="el_arrow"
         class="g-recaptcha-bubble-arrow"
-        style="
-          border-width: 10px;
-          border-style: solid;
-          border-color: transparent rgb(255, 255, 255) transparent transparent;
-          border-image: initial;
-          width: 0px;
-          height: 0px;
-          position: absolute;
-          pointer-events: none;
-          margin-top: -10px;
-          z-index: 2000000000;
-          top: 35px;
-          right: 100%;
-        "
+        style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%;"
       ></div>
       <div id="rc-imageselect">
         <div id="rc-imageselect">
@@ -149,7 +118,7 @@
                         tabindex="0"
                         class="rc-imageselect-tile"
                         :class="{'rc-imageselect-tileselected': list_selected.includes(tr + '_' + td)}"
-                        aria-label="图片验证"
+                        aria-label="image verification"
                         v-for="td in 3"
                         :key="td"
                         @click="_select(tr + '_' + td)"
@@ -195,7 +164,7 @@
                     ></button>
                   </div>
                   <div class="button-holder help-button-holder">
-                    <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0" ></a>
+                    <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
                   </div>
                 </div>
                 <div class="verify-button-holder">
@@ -212,11 +181,7 @@
                   </button>
                 </div>
               </div>
-              <div
-                class="rc-challenge-help"
-                style="display: none"
-                tabindex="0"
-              ></div>
+              <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
             </div>
           </div>
           <span class="rc-imageselect-tabloop-end" tabindex="0"></span>
@@ -247,14 +212,15 @@ const object_names = [
   "bridge",
   "bicycle",
 ];
+
 const object_random = () =>
   object_names[Math.floor(Math.random() * object_names.length)];
 
 export default {
   data() {
     return {
-      el_show: false,
-      is_loading: false,
+      show_modal: false,
+      is_loading_modal: false,
       el_rel_loading: false,
       el_arrow: false,
       style_selector: {
@@ -278,10 +244,20 @@ export default {
   },
   mounted() {
     window.addEventListener("resize", () => {
-      if (this.el_show) this._fix_position();
+      if (this.show_modal) this._fix_position();
     });
   },
   methods: {
+    async open_captcha() {
+      this.is_loading_modal = true;
+      await this._reload();
+      await delay(300);
+      this.show_modal = true;
+      await delay(300);
+      this.is_loading_modal = false;
+    },
+
+
     async _reload() {
       let _id = this.payload_filename,
         _name = this.search_query;
@@ -290,6 +266,7 @@ export default {
       while (_name == this.search_query)
         this.search_query = object_random();
     },
+
     async _delay_reload() {
       this.list_selected = [];
       this.el_rel_loading = true;
@@ -297,19 +274,13 @@ export default {
       await this._reload();
       this.el_rel_loading = false;
     },
+
     async _show_error(n) {
       this.is_wrong_input = n;
       await delay(1000);
       this.is_wrong_input = null;
     },
-    async _show() {
-      this.is_loading = true;
-      await this._reload();
-      await delay(300);
-      this.el_show = true;
-      await delay(300);
-      this.is_loading = false;
-    },
+    
     async _verify() {
       if (this.list_selected.length < 2) {
         return this._show_error("rc-imageselect-error-select-more");
@@ -319,6 +290,7 @@ export default {
       await this._show_error("rc-imageselect-incorrect-response");
       await this._delay_reload();
     },
+    
     async _select(key) {
       if (this.el_rel_loading) return;
       if (this.list_selected.includes(key))
@@ -327,6 +299,7 @@ export default {
         ));
       this.list_selected.push(key);
     },
+    
     async _fix_position() {
       const _bounding = this.$refs.container.getBoundingClientRect();
       const _style = this.style_selector;
@@ -348,22 +321,21 @@ export default {
       }
     },
   },
+
   watch: {
-    el_show(value) {
+    show_modal(value) {
       this._fix_position();
       const _style = this.style_selector;
       _style.visibility = value ? "visible" : "hidden";
       _style.opacity = value ? "1" : "0";
-      _style.transition = value
-        ? "visibility 0s linear 0s, opacity 0.3s linear"
-        : "visibility 0s linear 0.3s, opacity 0.3s linear";
+      _style.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
     },
   },
 };
 </script>
 
 <style>
-@import url(./assets/styles__ltr.css);
+@import url(./assets/styles.css);
 
 .rc-anchor-normal .rc-anchor-pt {
   margin: 2px 10px 0 0;
