@@ -1,22 +1,17 @@
 services:
-  main:
-    container_name: main
-    build: .
-
+  captcha:
+    # run Dockerfile from subdirectory
+    build:
+      context: ./captcha
+      dockerfile: Dockerfile
+    
     # mount volume
     volumes:
       - type: bind
-        source: .
-        target: /workspace
-    working_dir: /workspace
-
-    # config for pytorch IPC
-    # see: https://docs.docker.com/compose/gpu-support/
-    # see: https://github.com/NVIDIA/nvidia-container-toolkit?tab=readme-ov-file
-    stdin_open: true
-    tty: true
-    ipc: host
-
+        source: ./captcha
+        target: /workspace/captcha
+    working_dir: /workspace/captcha
+    
     # map ports to host
     ports:
-      - "8888:8888"
+      - "8080:8080"

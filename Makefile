@@ -33,6 +33,10 @@ up:
 
 # --------------------------------------------------------------- docker
 
+.PHONY: captcha # run captcha service from docker
+captcha:
+	docker-compose up --detach
+
 .PHONY: docker-install # run docker container
 docker-install:
 	@echo "to exec into docker container, run: 'docker exec -it main /bin/bash'"
