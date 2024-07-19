@@ -1,6 +1,6 @@
 services:
   captcha:
-    # run Dockerfile from subdirectory
+    # run docker script from subdirectory
     build:
       context: ./captcha
       dockerfile: Dockerfile

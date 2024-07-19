@@ -13,7 +13,7 @@
           class="rc-anchor-aria-status"
           aria-hidden="true"
         >
-          Recaptcha 要求验证.
+          Recaptcha Request Verification.
         </div>
         <div class="rc-anchor-error-msg-container" style="display: none">
           <span class="rc-anchor-error-msg" aria-hidden="true"></span>
@@ -80,7 +80,7 @@
                   aria-live="polite"
                   aria-labelledby="recaptcha-accessible-status"
                 ></span
-                >进行人机身份验证</label
+                >I'm not a robot</label
               >
             </div>
           </div>
@@ -96,14 +96,14 @@
           </div>
           <div class="rc-anchor-pt">
             <a
-              href="https://www.google.com/intl/zh-CN/policies/privacy/"
+              href="https://policies.google.com/privacy?hl=en"
               target="_blank"
-              >隐私权</a
+              >Privacy</a
             ><span aria-hidden="true" role="presentation"> - </span
             ><a
-              href="https://www.google.com/intl/zh-CN/policies/terms/"
+              href="https://policies.google.com/terms?hl=en/"
               target="_blank"
-              >使用条款</a
+              >Terms</a
             >
           </div>
         </div>

@@ -1,6 +1,7 @@
 <template>
   <div>
-    <h1>Hello world</h1>
+    <p>solve me if you can!</p>
+    <br>
     <Captcha />
   </div>
 </template>
@@ -17,6 +18,6 @@ export default {
 
 <style>
 body {
-  margin: 8px;
+  margin: 5em;
 }
 </style>
