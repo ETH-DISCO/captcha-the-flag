@@ -37,7 +37,7 @@ up:
 docker-install:
 	docker-compose up
 	docker ps --all
-	docker exec -it main /bin/bash
+	@echo "to exec into docker container, run: 'docker exec -it main /bin/bash'"
 
 .PHONY: docker-clean # wipe everything in docker
 docker-clean:
