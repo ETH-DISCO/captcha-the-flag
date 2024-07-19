@@ -1,4 +1,4 @@
 module.exports = {
-  productionSourceMap: false,
-  publicPath: process.env.NODE_ENV === 'production' ? '/joker-recaptcha/' : ''
+  productionSourceMap: false, // smaller bundle size
+  publicPath: '/', // serve from root
 };

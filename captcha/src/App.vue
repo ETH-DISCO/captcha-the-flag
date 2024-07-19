@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h2>享受被骗的感觉吧。</h2>
-    <h4>Enjoy being cheated</h4>
+    <h1>Hello world</h1>
     <Captcha />
   </div>
 </template>

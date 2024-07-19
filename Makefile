@@ -44,9 +44,9 @@ docker-clean:
 	docker-compose down
 
 	# wipe docker
-	docker stop $(docker ps -a -q)
-	docker rm $(docker ps -a -q)
-	docker rmi $(docker images -q)
+	-docker stop $$(docker ps -a -q)
+	-docker rm $$(docker ps -a -q)
+	-docker rmi $$(docker images -q)
 	yes | docker container prune
 	yes | docker image prune
 	yes | docker volume prune

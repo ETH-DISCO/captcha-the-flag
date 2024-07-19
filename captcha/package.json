@@ -2,9 +2,11 @@
   "name": "captcha-the-flag",
   "version": "0.1.0",
   "description": "captcha website",
+  "private": false,
   "author": {
     "name": "sueszli"
   },
+  "license": "AGPL-3.0-only",
   "repository": {
     "url": "https://github.com/qiangmouren/joker-recaptcha",
     "type": "git"
