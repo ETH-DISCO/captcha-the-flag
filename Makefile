@@ -31,6 +31,35 @@ up:
 	git commit -m "up"
 	git push
 
+# --------------------------------------------------------------- docker
+
+.PHONY: docker-install # exec into docker container
+docker-install:
+	docker-compose up
+	docker ps --all
+	docker exec -it main /bin/bash
+
+.PHONY: docker-clean # wipe everything in docker
+docker-clean:
+	docker-compose down
+
+	# wipe docker
+	docker stop $(docker ps -a -q)
+	docker rm $(docker ps -a -q)
+	docker rmi $(docker images -q)
+	yes | docker container prune
+	yes | docker image prune
+	yes | docker volume prune
+	yes | docker network prune
+	yes | docker system prune
+	
+	# check if successful
+	docker ps --all
+	docker images
+	docker system df
+	docker volume ls
+	docker network ls
+
 # --------------------------------------------------------------- help
 
 .PHONY: help # generate help message
