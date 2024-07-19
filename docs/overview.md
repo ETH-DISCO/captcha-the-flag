@@ -1,4 +1,4 @@
-# fake captcha
+# captcha clones
 
 nice captcha lookalikes
 
@@ -8,11 +8,11 @@ nice captcha lookalikes
 - https://github.com/somewhatalex/fakeCAPTCHA
 - https://github.com/dylandbl/faCAPTCHA
 
-# captcha attacks / captcha solvers
+# attacks: captcha solvers
 
 - https://github.com/ecthros/uncaptcha2
 
-# captcha defenses
+# defenses: anti captcha solvers
 
 - image detection: `torchattack`
 - sam: https://github.com/jiahaolu97/anything-unsegmentable
