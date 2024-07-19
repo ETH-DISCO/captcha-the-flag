@@ -80,7 +80,6 @@
     <!------------------------------------------------------------------------------- modal -->
 
     <div :style="style_selector">
-      <!-- mask layer -->
       <div
         v-show="el_arrow"
         class="g-recaptcha-bubble-arrow"
@@ -91,6 +90,7 @@
         class="g-recaptcha-bubble-arrow"
         style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%;"
       ></div>
+
       <div id="rc-imageselect">
         <div id="rc-imageselect">
           <div class="rc-imageselect-response-field"></div>
@@ -98,12 +98,17 @@
           <div class="rc-imageselect-payload">
             <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
               <div class="rc-imageselect-desc-wrapper">
+
+                <!-- instruction -->
                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
                   Select all squares with<strong style="font-size: 28px">{{ search_query }}</strong> If there are none, click verify
                 </div>
+
               </div>
               <div class="rc-imageselect-progress"></div>
             </div>
+
+            <!-- image selection -->
             <div class="rc-imageselect-challenge">
               <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                 <table class="rc-imageselect-table-33">
@@ -121,7 +126,6 @@
                       >
                         <div class="rc-image-tile-target">
                           <div class="rc-image-tile-wrapper" :style="{width: wrapper_size + 'px', height: wrapper_size + 'px'}">
-                            <!-- image payload here -->
                             <img
                               class="rc-image-tile-33"
                               :src="require('./assets/payload/' + payload_filename)"
@@ -137,6 +141,8 @@
                 </table>
               </div>
             </div>
+
+            <!-- error messages -->
             <div class="rc-imageselect-incorrect-response" v-show="is_wrong_input == 'rc-imageselect-incorrect-response'">
               Please try again.
             </div>
@@ -144,10 +150,13 @@
               Please select all images that apply.
             </div>
           </div>
+
           <div class="rc-footer">
             <div class="rc-separator"></div>
             <div class="rc-controls">
               <div class="primary-controls">
+
+                <!-- reload button -->
                 <div class="rc-buttons">
                   <div class="button-holder reload-button-holder">
                     <button
@@ -163,6 +172,8 @@
                     <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
                   </div>
                 </div>
+
+                <!-- submission button -->
                 <div class="verify-button-holder">
                   <button
                     class="rc-button-default goog-inline-block"
@@ -177,6 +188,7 @@
                   </button>
                 </div>
               </div>
+
               <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
             </div>
           </div>
@@ -191,12 +203,8 @@
 import "typeface-roboto";
 import delay from "delay";
 
-const payload_list = require
-  .context("./assets/payload", true, /^.*\.png$/)
-  .keys()
-  .map((x) => x.replace("./", ""));
-const payload_random = () =>
-  payload_list[Math.floor(Math.random() * payload_list.length)];
+const images = require.context("./assets/payload", true, /^.*\.png$/).keys().map((x) => x.replace("./", ""));
+const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 
 const object_names = [
   "bus",
@@ -209,8 +217,7 @@ const object_names = [
   "bicycle",
 ];
 
-const object_random = () =>
-  object_names[Math.floor(Math.random() * object_names.length)];
+const getRandomSearchQuery = () => object_names[Math.floor(Math.random() * object_names.length)];
 
 export default {
   data() {
@@ -235,15 +242,20 @@ export default {
 
       wrapper_size: 126,
       is_wrong_input: "",
-      search_query: object_random(),
-      payload_filename: payload_random(),
+      search_query: getRandomSearchQuery(),
+      payload_filename: getRandomImage(),
     };
   },
+
+
   mounted() {
     window.addEventListener("resize", () => {
-      if (this.show_modal) this._fix_position();
+      if (this.show_modal) {
+        this._fix_position();
+      }
     });
   },
+
   methods: {
     async open_modal() {
       this.is_loading_modal = true;
@@ -259,9 +271,9 @@ export default {
       let _id = this.payload_filename,
         _name = this.search_query;
       while (_id == this.payload_filename)
-        this.payload_filename = payload_random();
+        this.payload_filename = getRandomImage();
       while (_name == this.search_query)
-        this.search_query = object_random();
+        this.search_query = getRandomSearchQuery();
     },
 
     async _delay_reload() {
