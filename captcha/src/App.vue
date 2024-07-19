@@ -2,8 +2,10 @@
   <div>
     <p>solve me if you can!</p>
 
-    <!-- STEP 1: click on button, call open_captcha() function, open the captcha modal -->
-    <div style="width: 304px; height: 78px" @click="open_captcha" ref="container">
+    <!------------------------------------------------------------------------------- modal trigger -->
+
+    <!-- open modal: click button to call open_modal() -->
+    <div style="width: 304px; height: 78px" @click="open_modal" ref="container">
 
       <div id="rc-anchor-alert" class="rc-anchor-alert"></div>
       <div id="rc-anchor-container" class="rc-anchor rc-anchor-normal rc-anchor-light" style="position: relative">
@@ -68,14 +70,14 @@
       </div>
     </div>
 
-
-    <!-- transparent layer covering entire page, close the modal when clicked -->
+    <!-- close modal: transparent layer behind the modal that serves as a close button -->
     <div
       @click="show_modal = false"
       style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0;"
       v-show="show_modal"
     ></div>
 
+    <!------------------------------------------------------------------------------- modal -->
 
     <div :style="style_selector">
       <!-- mask layer -->
@@ -97,19 +99,13 @@
             <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
               <div class="rc-imageselect-desc-wrapper">
                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
-                  Select all squares with<strong style="font-size: 28px">{{ search_query }}</strong>If there are none, click verify
+                  Select all squares with<strong style="font-size: 28px">{{ search_query }}</strong> If there are none, click verify
                 </div>
               </div>
               <div class="rc-imageselect-progress"></div>
             </div>
             <div class="rc-imageselect-challenge">
-              <div
-                id="rc-imageselect-target"
-                class="rc-imageselect-target"
-                dir="ltr"
-                role="presentation"
-                aria-hidden="true"
-              >
+              <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                 <table class="rc-imageselect-table-33">
                   <tbody>
                     <tr v-for="tr in 3" :key="tr">
@@ -221,6 +217,7 @@ export default {
     return {
       show_modal: false,
       is_loading_modal: false,
+
       el_rel_loading: false,
       el_arrow: false,
       style_selector: {
@@ -248,7 +245,7 @@ export default {
     });
   },
   methods: {
-    async open_captcha() {
+    async open_modal() {
       this.is_loading_modal = true;
       await this._reload();
       await delay(300);
