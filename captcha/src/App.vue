@@ -160,11 +160,11 @@ export default {
 
             el_rel_loading: false,
             el_arrow: false,
-
-            MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
             list_selected: [],
 
-            wrapper_size: 126,
+            MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
+
+            wrapper_size: 126, //
 
             is_wrong_input: "",
 
@@ -232,34 +232,32 @@ export default {
         },
 
         async _fix_position() {
-            const _bounding = this.$refs.container.getBoundingClientRect();
-            const _style = this.MODAL_STYLE;
-            const _m = window.innerWidth < 470;
-            this.el_arrow = !_m;
-            if (_m) {
-                const _width = window.innerWidth;
-                _style.width = _width - 5 + "px";
-                this.wrapper_size = Math.floor((_width - 5) / 3) - 7.55555;
-                _style.left = 0;
-                _style.right = 0;
-                _style.margin = "auto";
+            const isMobile = window.innerWidth < 470;
+            this.el_arrow = !isMobile;
+            if (isMobile) {
+                this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
+                this.wrapper_size = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
+                this.MODAL_STYLE.left = 0;
+                this.MODAL_STYLE.right = 0;
+                this.MODAL_STYLE.margin = "auto";
             } else {
-                _style.width = "408px";
+                const bcr = this.$refs.container.getBoundingClientRect();
+                this.MODAL_STYLE.width = "408px";
                 this.wrapper_size = 128.5;
-                _style.left = _m ? 0 : _bounding.left + 51 + "px";
-                _style.top = _bounding.top + 2 + "px";
-                delete _style.margin;
+                this.MODAL_STYLE.left = isMobile ? 0 : bcr.left + 51 + "px";
+                this.MODAL_STYLE.top = bcr.top + 2 + "px";
+                delete this.MODAL_STYLE.margin;
             }
         },
     },
 
+    // track changes
     watch: {
         SHOW_MODAL(value) {
             this._fix_position();
-            const _style = this.MODAL_STYLE;
-            _style.visibility = value ? "visible" : "hidden";
-            _style.opacity = value ? "1" : "0";
-            _style.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
+            this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
+            this.MODAL_STYLE.opacity = value ? "1" : "0";
+            this.MODAL_STYLE.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
         },
     },
 };
@@ -274,7 +272,7 @@ export default {
 }
 
 body {
-    margin-top: 4rem;
-    margin-left: 4rem;
+    margin-top: 10vh;
+    margin-left: 10vw;
 }
 </style>
