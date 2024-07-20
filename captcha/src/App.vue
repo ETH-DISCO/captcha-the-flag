@@ -24,7 +24,8 @@
                                         <div class="recaptcha-checkbox-spinner" role="presentation" v-show="IS_LOADING_MODAL" :style="{ 'animation-play-state': 'running', opacity: IS_LOADING_MODAL ? 1 : 0, transform: 'scale(0)' }">
                                             <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
                                         </div>
-
+                                        
+                                        <!-- checkmark animation (disabled) -->
                                         <div class="recaptcha-checkbox-checkmark" role="presentation"></div>
                                     </span>
                                 </div>
