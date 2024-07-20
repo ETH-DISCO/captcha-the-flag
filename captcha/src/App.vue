@@ -157,7 +157,6 @@ todo:
 a) segmentation -> harder to implement
 b) object detection -> easier to implementdo this first
 c) object detection until none left (different button + skip button)
-
 */
 
 export default {
@@ -167,7 +166,11 @@ export default {
             // modal
             SHOW_MODAL: false,
             
-            // task",
+            // constants
+            OBJECT_DETECTION_FILEPATH: "../images/hcaptcha/",
+            SEGMENTATION_FILEPATH: "../images/hcaptcha/",
+
+            // task
             FILENAME: null,
             SEARCH_QUERY: null,
             SELECTIONS: [],
@@ -228,13 +231,16 @@ export default {
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
             
-            // refresh until different
+            // generate task
+            const taskTypes = ["segmentation", "object detection"];
+            const getRandomTaskType = () => taskTypes[Math.floor(Math.random() * taskTypes.length)];
+
             const images = require.context("../images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
             const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
-
+            
             const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
             const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
-
+            
             const fn = this.FILENAME;
             while (fn == this.FILENAME) {
                 this.FILENAME = getRandomImage();
@@ -243,6 +249,10 @@ export default {
             while (sq == this.SEARCH_QUERY) {
                 this.SEARCH_QUERY = getRandomSearchQuery();
             }
+
+
+
+
 
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
