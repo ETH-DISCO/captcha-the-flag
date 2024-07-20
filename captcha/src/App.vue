@@ -19,10 +19,12 @@
                                     <!-- loading spinner-->
                                     <span class="recaptcha-checkbox goog-inline-block recaptcha-checkbox-unchecked rc-anchor-checkbox" role="checkbox" aria-checked="false" id="recaptcha-anchor" dir="ltr" aria-labelledby="recaptcha-anchor-label" aria-disabled="false" tabindex="0">
                                         <div class="recaptcha-checkbox-border" role="presentation" v-show="!IS_LOADING_MODAL"></div>
+
                                         <div class="recaptcha-checkbox-borderAnimation" role="presentation" :style="IS_LOADING_MODAL ? { 'background-position': '-28px -588px' } : {}"></div>
                                         <div class="recaptcha-checkbox-spinner" role="presentation" v-show="IS_LOADING_MODAL" :style="{ 'animation-play-state': 'running', opacity: IS_LOADING_MODAL ? 1 : 0, transform: 'scale(0)' }">
                                             <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
                                         </div>
+
                                         <div class="recaptcha-checkbox-checkmark" role="presentation"></div>
                                     </span>
                                 </div>
