@@ -2,6 +2,9 @@
     <div>
         <p>solve me if you can.</p>
 
+        <!-- this is how you use the public folder to dynamically read things -->
+        <img :src="TEST" alt="">
+
         <!-- modal buttons -->
         <section>
             <!-- modal open button -->
@@ -181,6 +184,7 @@ task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#pag
 */
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
+const publicFiles = require.context('/public/images', true, /.+/);
 
 export default {
     // initial state of component
@@ -188,6 +192,8 @@ export default {
         return {
             // modal
             SHOW_MODAL: false,
+
+            TEST: "/images/hcaptcha/airplane/1650199961986_0.jpg",
 
             // task
             TASK_PAIRS: {},
@@ -219,6 +225,9 @@ export default {
         this.nextTask();
     },
     mounted() {
+
+        console.log(publicFiles.keys());
+
         // ran after DOM is mounted
         window.addEventListener("resize", () => {
             if (this.SHOW_MODAL) {
@@ -251,7 +260,9 @@ export default {
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
 
+            // see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
             // see: https://webpack.js.org/guides/dependency-management/#requirecontext
+
             const path = "@/assets/images/hcaptcha/"
             const filetree = require.context("@/assets/images/hcaptcha/", true, /.+/).keys()
             const filetreeMap = filetree.reduce((acc, x) => {
