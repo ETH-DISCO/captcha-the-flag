@@ -96,7 +96,7 @@
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img
                                                             class="rc-image-tile-33"
-                                                            :src="require('../images/hcaptcha/boat/' + FILENAME)"
+                                                            :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
                                                             :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
                                                         />
                                                         <div class="rc-image-tile-overlay"></div>
@@ -149,6 +149,7 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
+import { DETECTION_TASK_PATH, SEGMENTATION_TASK_PATH } from '@/config/config';
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
@@ -165,12 +166,14 @@ export default {
         return {
             // modal
             SHOW_MODAL: false,
-            
-            // constants
-            OBJECT_DETECTION_FILEPATH: "../images/hcaptcha/",
-            SEGMENTATION_FILEPATH: "../images/hcaptcha/",
+
+            // task constants
+            DETECTION_TASK_PATH, // directory where each subdirectory contains images of a single class
+            SEGMENTATION_TASK_PATH, // directory containing images with multiple classes (... not implemented yet)
 
             // task
+            TASK: {},
+
             FILENAME: null,
             SEARCH_QUERY: null,
             SELECTIONS: [],
@@ -230,12 +233,33 @@ export default {
             // reset
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
-            
-            // generate task
-            const taskTypes = ["segmentation", "object detection"];
-            const getRandomTaskType = () => taskTypes[Math.floor(Math.random() * taskTypes.length)];
 
-            const images = require.context("../images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
+            
+            // list all subdirectories in path
+            // const ctx = require.context(this.DETECTION_TASK_PATH, true, /^\.\/[^/]+$/) 
+            // const pts = ctx.keys()
+            // const subdirs = pts.map(path => path.replace('./', ''))
+            // console.log(subdirs)
+
+
+
+
+
+
+            // const generateDetectionTask = () => {
+            // }
+
+            // const generateSegmentationTask = () => {
+            // }
+
+            // if (Math.random() < 0.5) {
+            // if (false) {
+            //     generateDetectionTask();
+            // } else {
+            //     generateSegmentationTask();
+            // }
+
+            const images = require.context("@/assets/images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
             const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
             
             const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
@@ -249,9 +273,6 @@ export default {
             while (sq == this.SEARCH_QUERY) {
                 this.SEARCH_QUERY = getRandomSearchQuery();
             }
-
-
-
 
 
             await randomDelay(300, 400);
