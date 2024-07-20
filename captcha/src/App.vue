@@ -126,7 +126,7 @@
                                                     <img
                                                         class="rc-image-tile-33"
                                                         :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                        :src="require('@/assets/images/hcaptcha/' + TASK_PAIRS[tr + '_' + td])"
+                                                        :src="require('/public/images/hcaptcha/' + TASK_PAIRS[tr + '_' + td])"
                                                     />
                                                     <div class="rc-image-tile-overlay"></div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -263,8 +263,8 @@ export default {
             // see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
             // see: https://webpack.js.org/guides/dependency-management/#requirecontext
 
-            const path = "@/assets/images/hcaptcha/"
-            const filetree = require.context("@/assets/images/hcaptcha/", true, /.+/).keys()
+            const path = "/public/images/hcaptcha/"
+            const filetree = require.context("/public/images/hcaptcha/", true, /.+/).keys()
             const filetreeMap = filetree.reduce((acc, x) => {
                 const cls = x.replace("./", "").split("/")[0];
                 if (!acc[cls]) {
