@@ -85,10 +85,19 @@
                                     <tbody>
                                         <!-- images -->
                                         <tr v-for="tr in 3" :key="tr">
-                                            <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
+                                            <td
+                                                role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
+                                                :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
+                                                v-for="td in 3" :key="td"
+                                                @click="selectField(tr + '_' + td)"
+                                            >
                                                 <div class="rc-image-tile-target">
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
-                                                        <img class="rc-image-tile-33" :src="require('../images/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
+                                                        <img
+                                                            class="rc-image-tile-33"
+                                                            :src="require('../images/payload/' + FILENAME)"
+                                                            :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
+                                                        />
                                                         <div class="rc-image-tile-overlay"></div>
                                                     </div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -139,10 +148,13 @@
 import "typeface-roboto";
 import delay from "delay";
 
+
 // todo: logic and different tasks
 // a) segmentation
 // b) object detection
 // c) object detection until none left (different button + skip button)
+
+const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 const images = require.context("../images/payload/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
@@ -150,24 +162,22 @@ const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
 const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
 
-const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
-
 export default {
     // initial state of component
     data() {
         return {
             // modal
             SHOW_MODAL: false,
-            IS_LOADING_MODAL: false,
-
+            
             // task
             FILENAME: getRandomImage(),
             SEARCH_QUERY: getRandomSearchQuery(),
             SELECTIONS: [],
-            IS_LOADING_RESULT: false,
             ERROR_TYPE: "",
-
+            
             // styling
+            IS_LOADING_MODAL: false,
+            IS_LOADING_RESULT: false,
             IS_DESKTOP_MODE: false,
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
             TILE_SIZE_PX: 126,
@@ -194,7 +204,7 @@ export default {
          */
 
         async nextTask() {
-            // reset selections
+            // reset
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
             
@@ -212,10 +222,10 @@ export default {
             this.IS_LOADING_RESULT = false;
         },
 
-        async showError(n) {
-            this.ERROR_TYPE = n;
+        async showError(type) {
+            this.ERROR_TYPE = type;
             
-            await randomDelay(300, 700);
+            await randomDelay(1000, 1500); // let user read
             this.ERROR_TYPE = null;
         },
 
@@ -227,9 +237,9 @@ export default {
 
             this.IS_LOADING_RESULT = true;
             await randomDelay(300, 700);
-
-            // ... some logic
-
+            
+            // ... some logic where you check the selections
+            
             let isCorrect = false;
             if (isCorrect) {
                 console.log("correct");
@@ -237,6 +247,7 @@ export default {
                 console.log("incorrect");
                 await this.showError("rc-imageselect-incorrect-response");
             }
+            
             await this.nextTask();
         },
 
