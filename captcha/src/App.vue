@@ -1,8 +1,8 @@
 <template>
     <div>
-        <p>solve me if you can!</p>
+        <p>solve me if you can.</p>
 
-        <!-- modal logic -->
+        <!-- modal buttons -->
         <section>
             <!-- modal open button -->
             <div style="width: 304px; height: 78px" @click="openModal" ref="container">
@@ -13,10 +13,10 @@
                         <span class="rc-anchor-error-msg" aria-hidden="true"></span>
                     </div>
                     <div class="rc-anchor-content">
-                        <!-- loading spinner-->
                         <div class="rc-inline-block">
                             <div class="rc-anchor-center-container">
                                 <div class="rc-anchor-center-item rc-anchor-checkbox-holder">
+                                    <!-- loading spinner-->
                                     <span class="recaptcha-checkbox goog-inline-block recaptcha-checkbox-unchecked rc-anchor-checkbox" role="checkbox" aria-checked="false" id="recaptcha-anchor" dir="ltr" aria-labelledby="recaptcha-anchor-label" aria-disabled="false" tabindex="0">
                                         <div class="recaptcha-checkbox-border" role="presentation" v-show="!IS_LOADING_MODAL"></div>
                                         <div class="recaptcha-checkbox-borderAnimation" role="presentation" :style="IS_LOADING_MODAL ? { 'background-position': '-28px -588px' } : {}"></div>
@@ -28,12 +28,11 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- message -->
                         <div class="rc-inline-block">
                             <div class="rc-anchor-center-container">
                                 <label class="rc-anchor-center-item rc-anchor-checkbox-label" aria-hidden="true" role="presentation" id="recaptcha-anchor-label">
-                                    <span aria-live="polite" aria-labelledby="recaptcha-accessible-status"></span>
-                                    I'm not a robot
+                                    <!-- message -->
+                                    <span aria-live="polite" aria-labelledby="recaptcha-accessible-status"></span> I'm not a robot
                                 </label>
                             </div>
                         </div>
@@ -59,16 +58,17 @@
         
         <!-- modal -->
         <section :style="MODAL_STYLE">
-            <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
-            <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            <header>
+                <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
+                <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            </header>
 
-            <div id="rc-imageselect">
+            <main id="rc-imageselect">
                 <div id="rc-imageselect">
                     <div class="rc-imageselect-response-field"></div>
                     <span class="rc-imageselect-tabloop-begin" tabindex="0"></span>
-                    
-                    <!-- ------------------------------------------------------------------------------------ task logic -->
-                    <main class="rc-imageselect-payload">
+                    <div class="rc-imageselect-payload">
+                        
                         <!-- task instructions -->
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
@@ -80,11 +80,11 @@
                             <div class="rc-imageselect-progress"></div>
                         </div>
 
-                        <!-- image selection -->
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
-                                    <!-- keep it this way, this can be useful for the segmentation task -->
+                                    
+                                    <!-- images -->
                                     <tbody>
                                         <tr v-for="tr in 3" :key="tr">
                                             <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
@@ -98,6 +98,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -105,37 +106,34 @@
                         <!-- error messages -->
                         <div class="rc-imageselect-incorrect-response" v-show="ERROR_TYPE == 'rc-imageselect-incorrect-response'">Please try again.</div>
                         <div class="rc-imageselect-error-select-more" v-show="ERROR_TYPE == 'rc-imageselect-error-select-more'">Please select all images that apply.</div>
-                    </main>
-                    <!-- ------------------------------------------------------------------------------------ task logic -->
+                    </div>
+                </div>
+            </main>
 
-                    <!-- footer buttons -->
-                    <footer>
-                        <div class="rc-footer">
-                            <div class="rc-separator"></div>
-                            <div class="rc-controls">
-                                <div class="primary-controls">
-                                    <!-- reload button -->
-                                    <div class="rc-buttons">
-                                        <div class="button-holder reload-button-holder">
-                                            <button class="rc-button goog-inline-block rc-button-reload" title="Change your verification code" value="" id="recaptcha-reload-button" tabindex="0" @click="_delay_reload"></button>
-                                        </div>
-                                        <div class="button-holder help-button-holder">
-                                            <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- submission button -->
-                                    <div class="verify-button-holder">
-                                        <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
-                                    </div>
+            <footer>
+                <div class="rc-footer">
+                    <div class="rc-separator"></div>
+                    <div class="rc-controls">
+                        <div class="primary-controls">
+                            <!-- reload button -->
+                            <div class="rc-buttons">
+                                <div class="button-holder reload-button-holder">
+                                    <button class="rc-button goog-inline-block rc-button-reload" title="Change your verification code" value="" id="recaptcha-reload-button" tabindex="0" @click="nextTask"></button>
                                 </div>
-                                <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
+                                <div class="button-holder help-button-holder">
+                                    <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
+                                </div>
+                            </div>
+                            <!-- submission button -->
+                            <div class="verify-button-holder">
+                                <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
                             </div>
                         </div>
-                        <span class="rc-imageselect-tabloop-end" tabindex="0"></span>
-                    </footer>
+                        <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
+                    </div>
                 </div>
-            </div>
+                <span class="rc-imageselect-tabloop-end" tabindex="0"></span>
+            </footer>
         </section>
     </div>
 </template>
@@ -143,6 +141,8 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
+
+const getRandomUniform = (min, max) => Math.random() * (max - min) + min;
 
 // todo: logic and different tasks
 // a) segmentation
@@ -158,6 +158,7 @@ const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 const searchQueries = ["Buses", "Fire hydrants", "Chimneys", "Mountains", "Planes", "Crosswalks", "Bridges", "Bicycles"];
 const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
 
+
 export default {
     // initial state of component
     data() {
@@ -169,8 +170,8 @@ export default {
             // task
             FILENAME: getRandomImage(),
             SEARCH_QUERY: getRandomSearchQuery(),
-            IS_LOADING_RESULT: false,
             SELECTIONS: [],
+            IS_LOADING_RESULT: false,
             ERROR_TYPE: "",
             
             // styling
@@ -186,35 +187,37 @@ export default {
          */
         async openModal() {
             this.IS_LOADING_MODAL = true;
-            await this._reload();
-            await delay(300);
+            await this.nextTask();
+            
+            await delay(150);
             this.SHOW_MODAL = true;
-            await delay(300);
+            await delay(150);
+            
             this.IS_LOADING_MODAL = false;
         },
 
-        
-        async _reload() {
-            let _id = this.FILENAME;
-            let _name = this.SEARCH_QUERY;
-            while (_id == this.FILENAME) {
-                this.FILENAME = getRandomImage();
-            }
-            while (_name == this.SEARCH_QUERY) {
-                this.SEARCH_QUERY = getRandomSearchQuery();
-            }
-        },
-        async _delay_reload() {
+        /*
+        * task logic
+        */
+        async nextTask() {
             this.SELECTIONS = [];
+
             this.IS_LOADING_RESULT = true;
             await delay(800);
-            await this._reload();
+
+            // refresh until different
+            const fn = this.FILENAME;
+            const sq = this.SEARCH_QUERY;
+            while (fn == this.FILENAME) {
+                this.FILENAME = getRandomImage();
+            }
+            while (sq == this.SEARCH_QUERY) {
+                this.SEARCH_QUERY = getRandomSearchQuery();
+            }
+
             this.IS_LOADING_RESULT = false;
         },
 
-        /*
-         * task logic
-         */
         async showError(n) {
             this.ERROR_TYPE = n;
             await delay(1000);
@@ -231,7 +234,7 @@ export default {
             await delay(1000);
 
             await this.showError("rc-imageselect-incorrect-response");
-            await this._delay_reload();
+            await this.nextTask();
         },
         async selectField(key) {
             if (this.IS_LOADING_RESULT) {
@@ -246,18 +249,18 @@ export default {
         /*
          * styling logic
          */
-        async responsiveRender() {
+        async reRenderModal() {
             const isMobile = window.innerWidth < 470;
             this.IS_DESKTOP_MODE = !isMobile;
             if (isMobile) {
-                console.log("rendering for mobile device " + window.innerWidth + "px");
+                console.log("rendering for mobile device: " + window.innerWidth + "px width");
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
                 this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
-                console.log("rendering for desktop device " + window.innerWidth + "px");
+                console.log("rendering for desktop device: " + window.innerWidth + "px width");
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
                 this.TILE_SIZE_PX = 128.5;
@@ -269,7 +272,7 @@ export default {
     },
     watch: {
         SHOW_MODAL(value) {
-            this.responsiveRender();
+            this.reRenderModal();
             this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
             this.MODAL_STYLE.opacity = value ? "1" : "0";
             this.MODAL_STYLE.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
@@ -278,7 +281,7 @@ export default {
     mounted() {
         window.addEventListener("resize", () => {
             if (this.SHOW_MODAL) {
-                this.responsiveRender();
+                this.reRenderModal();
             }
         });
     },
