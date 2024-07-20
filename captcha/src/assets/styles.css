@@ -966,11 +966,20 @@ body {
     min-width: 240px;
 }
 
+.rc-error-msg,
 .rc-imageselect-incorrect-response,
 .rc-imageselect-error-dynamic-more,
 .rc-imageselect-error-select-more,
 .rc-imageselect-error-select-something {
     color: #d14836;
+    font-size: 14px;
+    padding: 7px 0;
+    text-align: center;
+    width: 100%;
+    background-color: white;
+}
+.rc-success-msg {
+    color: #34a853;
     font-size: 14px;
     padding: 7px 0;
     text-align: center;

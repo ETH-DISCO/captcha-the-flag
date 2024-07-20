@@ -117,12 +117,10 @@
                                                 @click="selectField(tr + '_' + td)"
                                             >
                                                 <div class="rc-image-tile-target">
-                                                    <!-- show whole image 9 times -->
-                                                    <!-- :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)" -->
                                                     <img
                                                         class="rc-image-tile-33"
                                                         :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                        :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
+                                                        :src="require('@/assets/images/hcaptcha/' + TASK_PAIRS[tr + '_' + td])"
                                                     />
                                                     <div class="rc-image-tile-overlay"></div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -135,9 +133,10 @@
                             </div>
                         </div>
 
-                        <!-- error messages -->
-                        <div class="rc-imageselect-incorrect-response" v-show="ERROR_TYPE == 'rc-imageselect-incorrect-response'">Please try again.</div>
-                        <div class="rc-imageselect-error-select-more" v-show="ERROR_TYPE == 'rc-imageselect-error-select-more'">Please select all images that apply.</div>
+                        <!-- messages -->
+                        <div class="rc-error-msg" v-show="MSG_TYPE == 'incorrect-response'">Please try again.</div>
+                        <div class="rc-error-msg" v-show="MSG_TYPE == 'incorrect-select-more'">Please select all images that apply.</div>
+                        <div class="rc-success-msg" v-show="MSG_TYPE == 'correct-response'">Correct.</div>
                     </div>
                 </div>
             </main>
@@ -173,13 +172,12 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
-// import { DETECTION_TASK_PATH, SEGMENTATION_TASK_PATH } from '@/config/config';
-
-const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 /*
 task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
 */
+
+const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
     // initial state of component
@@ -189,13 +187,11 @@ export default {
             SHOW_MODAL: false,
 
             // task
-            TASK_PAIRS: [],
-            SOLUTION_PAIRS: [],
+            TASK_PAIRS: {},
+            SOLUTION_PAIRS: {},
             SEARCH_QUERY: null,
             SELECTIONS: [],
-            ERROR_TYPE: "",
-
-            FILENAME: null,
+            MSG_TYPE: "",
             
             // styling
             IS_LOADING_MODAL: false,
@@ -274,62 +270,53 @@ export default {
                 return [key, val];
             };
 
-            for (let i = 0; i < 3; i++) {
-                for (let j = 0; j < 3; j++) {
+            for (let i = 1; i < 4; i++) {
+                for (let j = 1; j < 4; j++) {
                     const [cls, img] = getRandomPair();
                     const coord = `${i}_${j}`;
                     
-                    this.TASK_PAIRS.push([coord, img]);
-                    this.SOLUTION_PAIRS.push([coord, cls]);
+                    this.TASK_PAIRS[coord] = img.replace(path, "");
+                    this.SOLUTION_PAIRS[coord] = cls;
                 }
             }
+            
+            this.SEARCH_QUERY = this.SOLUTION_PAIRS[Object.keys(this.SOLUTION_PAIRS)[Math.floor(Math.random() * Object.keys(this.SOLUTION_PAIRS).length)]];
+
             console.log("task pairs", this.TASK_PAIRS);
             console.log("solution pairs", this.SOLUTION_PAIRS);
-            
-            this.SEARCH_QUERY = this.SOLUTION_PAIRS[Math.floor(Math.random() * this.SOLUTION_PAIRS.length)][1];
             console.log("search query", this.SEARCH_QUERY);
-
-            
-            // ------------------------------------------------------------------------ experimenting
-            
-            const images = require.context("@/assets/images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
-            const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
-            const fn = this.FILENAME;
-            while (fn == this.FILENAME) {
-                this.FILENAME = getRandomImage();
-            }
 
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
 
-        async showError(errorType) {
-            this.ERROR_TYPE = errorType;
+        async showMsg(errorType) {
+            this.MSG_TYPE = errorType;
             
             await randomDelay(1000, 1500); // let user read
-            this.ERROR_TYPE = null;
+            this.MSG_TYPE = null;
         },
 
         async verify() {
-            if (this.SELECTIONS.length < 2) {
+            if (this.SELECTIONS.length < 1) {
                 console.log("didn't select sufficient images");
-                return this.showError("rc-imageselect-error-select-more");
+                return this.showMsg("incorrect-select-more");
             }
 
             this.IS_LOADING_RESULT = true;
             await randomDelay(300, 700);
             
-            // ... some logic where you check the selections
-            
-            let isCorrect = false;
+            const isCorrect = this.SELECTIONS.every((x) => this.SOLUTION_PAIRS[x] == this.SEARCH_QUERY);
             if (isCorrect) {
                 console.log("correct");
+                await this.showMsg("correct-response");
+                await randomDelay(800, 1200);
+                this.SHOW_MODAL = false;
             } else {
                 console.log("incorrect");
-                await this.showError("rc-imageselect-incorrect-response");
+                await this.showMsg("incorrect-response");
+                await this.nextTask();
             }
-            
-            await this.nextTask();
         },
 
         async selectField(key) {
