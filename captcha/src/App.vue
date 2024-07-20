@@ -142,7 +142,7 @@
 import "typeface-roboto";
 import delay from "delay";
 
-const getRandomUniform = (min, max) => Math.random() * (max - min) + min;
+const BASE = './assets/payload/';
 
 // todo: logic and different tasks
 // a) segmentation
