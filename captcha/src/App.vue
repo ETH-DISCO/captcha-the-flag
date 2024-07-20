@@ -95,7 +95,7 @@
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img
                                                             class="rc-image-tile-33"
-                                                            :src="require('../images/payload/' + FILENAME)"
+                                                            :src="require('../images/hcaptcha/boat/' + FILENAME)"
                                                             :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
                                                         />
                                                         <div class="rc-image-tile-overlay"></div>
@@ -156,7 +156,7 @@ import delay from "delay";
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
-const images = require.context("../images/payload/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
+const images = require.context("../images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 
 const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
@@ -222,8 +222,8 @@ export default {
             this.IS_LOADING_RESULT = false;
         },
 
-        async showError(type) {
-            this.ERROR_TYPE = type;
+        async showError(errorType) {
+            this.ERROR_TYPE = errorType;
             
             await randomDelay(1000, 1500); // let user read
             this.ERROR_TYPE = null;
@@ -259,6 +259,8 @@ export default {
             if (this.SELECTIONS.includes(key)) {
                 return (this.SELECTIONS = this.SELECTIONS.filter((x) => x != key));
             }
+            console.log("selected", key);
+            console.log("selections", this.SELECTIONS);
             this.SELECTIONS.push(key);
         },
 
