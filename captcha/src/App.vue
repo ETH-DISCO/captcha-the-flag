@@ -284,7 +284,6 @@ export default {
             }
             
             this.SEARCH_QUERY = this.SOLUTION_PAIRS[Object.keys(this.SOLUTION_PAIRS)[Math.floor(Math.random() * Object.keys(this.SOLUTION_PAIRS).length)]];
-
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
