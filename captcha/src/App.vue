@@ -82,8 +82,9 @@
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
+                                    
+                                    <!-- segmentation task -->
                                     <tbody>
-                                        <!-- images -->
                                         <tr v-for="tr in 3" :key="tr">
                                             <td
                                                 role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
@@ -105,6 +106,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -148,19 +150,15 @@
 import "typeface-roboto";
 import delay from "delay";
 
-
-// todo: logic and different tasks
-// a) segmentation
-// b) object detection
-// c) object detection until none left (different button + skip button)
-
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
-const images = require.context("../images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
-const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
+/*
+todo:
+a) segmentation -> harder to implement
+b) object detection -> easier to implementdo this first
+c) object detection until none left (different button + skip button)
 
-const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
-const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
+*/
 
 export default {
     // initial state of component
@@ -169,9 +167,9 @@ export default {
             // modal
             SHOW_MODAL: false,
             
-            // task
-            FILENAME: getRandomImage(),
-            SEARCH_QUERY: getRandomSearchQuery(),
+            // task",
+            FILENAME: null,
+            SEARCH_QUERY: null,
             SELECTIONS: [],
             ERROR_TYPE: "",
             
@@ -182,6 +180,28 @@ export default {
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
             TILE_SIZE_PX: 126,
         };
+    },
+
+    watch: {
+        // reactive properties
+        SHOW_MODAL(value) {
+            this.reRenderModal();
+            this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
+            this.MODAL_STYLE.opacity = value ? "1" : "0";
+            this.MODAL_STYLE.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
+        },
+    },
+    created() {
+        // ran before DOM is mounted
+        this.nextTask();
+    },
+    mounted() {
+        // ran after DOM is mounted
+        window.addEventListener("resize", () => {
+            if (this.SHOW_MODAL) {
+                this.reRenderModal();
+            }
+        });
     },
 
     methods: {
@@ -209,6 +229,12 @@ export default {
             this.IS_LOADING_RESULT = true;
             
             // refresh until different
+            const images = require.context("../images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
+            const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
+
+            const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
+            const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
+
             const fn = this.FILENAME;
             while (fn == this.FILENAME) {
                 this.FILENAME = getRandomImage();
@@ -285,23 +311,8 @@ export default {
                 this.MODAL_STYLE.top = bcr.top + 2 + "px";
                 delete this.MODAL_STYLE.margin;
             }
-        },
-    },
-    watch: {
-        SHOW_MODAL(value) {
-            this.reRenderModal();
-            this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
-            this.MODAL_STYLE.opacity = value ? "1" : "0";
-            this.MODAL_STYLE.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
-        },
-    },
-    mounted() {
-        window.addEventListener("resize", () => {
-            if (this.SHOW_MODAL) {
-                this.reRenderModal();
-            }
-        });
-    },
+        }
+    }
 };
 </script>
 
