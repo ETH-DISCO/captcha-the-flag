@@ -87,7 +87,7 @@
                                         <tr v-for="tr in 3" :key="tr">
                                             <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': list_selected.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="_select(tr + '_' + td)">
                                                 <div class="rc-image-tile-target">
-                                                    <div class="rc-image-tile-wrapper" :style="{ width: wrapper_size + 'px', height: wrapper_size + 'px' }">
+                                                    <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img class="rc-image-tile-33" :src="require('./assets/payload/' + payload_filename)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                     </div>
@@ -156,28 +156,23 @@ export default {
         return {
             SHOW_MODAL: false,
             IS_LOADING_MODAL: false,
+            
+            // task
+            payload_filename: getRandomImage(),
             SEARCH_QUERY: getRandomSearchQuery(),
 
             el_rel_loading: false,
             el_arrow: false,
             list_selected: [],
 
-            MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
-
-            wrapper_size: 126, //
-
+            
             is_wrong_input: "",
-
-            payload_filename: getRandomImage(),
+            
+            
+            // styling
+            MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
+            TILE_SIZE_PX: 126,
         };
-    },
-
-    mounted() {
-        window.addEventListener("resize", () => {
-            if (this.SHOW_MODAL) {
-                this._fix_position();
-            }
-        });
     },
 
     methods: {
@@ -200,7 +195,6 @@ export default {
                 this.SEARCH_QUERY = getRandomSearchQuery();
             }
         },
-
         async _delay_reload() {
             this.list_selected = [];
             this.el_rel_loading = true;
@@ -209,19 +203,20 @@ export default {
             this.el_rel_loading = false;
         },
 
-        async _show_error(n) {
+        
+        // verify always calls showError
+        async showError(n) {
             this.is_wrong_input = n;
             await delay(1000);
             this.is_wrong_input = null;
         },
-
         async _verify() {
             if (this.list_selected.length < 2) {
-                return this._show_error("rc-imageselect-error-select-more");
+                return this.showError("rc-imageselect-error-select-more");
             }
             this.el_rel_loading = true;
             await delay(1000);
-            await this._show_error("rc-imageselect-incorrect-response");
+            await this.showError("rc-imageselect-incorrect-response");
             await this._delay_reload();
         },
 
@@ -231,19 +226,20 @@ export default {
             this.list_selected.push(key);
         },
 
-        async _fix_position() {
+        // rerender on screen resize or opening / closing modal
+        async responsiveRender() {
             const isMobile = window.innerWidth < 470;
             this.el_arrow = !isMobile;
             if (isMobile) {
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
-                this.wrapper_size = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
+                this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
-                this.wrapper_size = 128.5;
+                this.TILE_SIZE_PX = 128.5;
                 this.MODAL_STYLE.left = isMobile ? 0 : bcr.left + 51 + "px";
                 this.MODAL_STYLE.top = bcr.top + 2 + "px";
                 delete this.MODAL_STYLE.margin;
@@ -251,14 +247,21 @@ export default {
         },
     },
 
-    // track changes
+    // track changes in SHOW_MODAL
     watch: {
         SHOW_MODAL(value) {
-            this._fix_position();
+            this.responsiveRender();
             this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
             this.MODAL_STYLE.opacity = value ? "1" : "0";
             this.MODAL_STYLE.transition = value ? "visibility 0s linear 0s, opacity 0.3s linear" : "visibility 0s linear 0.3s, opacity 0.3s linear";
         },
+    },
+    mounted() {
+        window.addEventListener("resize", () => {
+            if (this.SHOW_MODAL) {
+                this.responsiveRender();
+            }
+        });
     },
 };
 </script>
