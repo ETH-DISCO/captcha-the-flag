@@ -121,7 +121,7 @@
 
                                 <!-- submission button -->
                                 <div class="verify-button-holder">
-                                    <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': el_rel_loading }" tabindex="0" @click="_verify">verify</button>
+                                    <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': el_rel_loading }" tabindex="0" @click="verify">verify</button>
                                 </div>
                             </div>
 
@@ -140,6 +140,9 @@ import "typeface-roboto";
 import delay from "delay";
 
 // todo: logic and different tasks
+// a) segmentation
+// b) object detection
+// c) object detection until none left (different button + skip button)
 
 const images = require
     .context("./assets/payload", true, /^.*\.png$/)
@@ -209,19 +212,27 @@ export default {
             await delay(1000);
             this.is_wrong_input = null;
         },
-        async _verify() {
+        async verify() {
+            // didn't select sufficient images
             if (this.list_selected.length < 2) {
                 return this.showError("rc-imageselect-error-select-more");
             }
+
+            // didn't select sufficient images
             this.el_rel_loading = true;
             await delay(1000);
+
             await this.showError("rc-imageselect-incorrect-response");
             await this._delay_reload();
         },
 
         async _select(key) {
-            if (this.el_rel_loading) return;
-            if (this.list_selected.includes(key)) return (this.list_selected = this.list_selected.filter((x) => x != key));
+            if (this.el_rel_loading) {
+                return;
+            }
+            if (this.list_selected.includes(key)) {
+                return (this.list_selected = this.list_selected.filter((x) => x != key));
+            }
             this.list_selected.push(key);
         },
 
@@ -229,14 +240,14 @@ export default {
             const isMobile = window.innerWidth < 470;
             this.el_arrow = !isMobile;
             if (isMobile) {
-                console.log("detected mobile device " + window.innerWidth + "px");
+                console.log("rendering for mobile device " + window.innerWidth + "px");
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
                 this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
-                console.log("detected desktop device " + window.innerWidth + "px");
+                console.log("rendering for desktop device " + window.innerWidth + "px");
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
                 this.TILE_SIZE_PX = 128.5;
