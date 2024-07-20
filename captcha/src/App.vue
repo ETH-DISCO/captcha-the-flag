@@ -83,8 +83,8 @@
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
                                     
-                                    <!-- segmentation task -->
-                                    <tbody>
+                                    <!-- segmentation task (needs to be 4x4) -->
+                                    <!-- <tbody>
                                         <tr v-for="tr in 3" :key="tr">
                                             <td
                                                 role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
@@ -96,11 +96,34 @@
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img
                                                             class="rc-image-tile-33"
-                                                            :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
                                                             :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
+                                                            :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
                                                         />
                                                         <div class="rc-image-tile-overlay"></div>
                                                     </div>
+                                                    <div class="rc-imageselect-checkbox"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody> -->
+
+                                    <!-- detection task -->
+                                    <tbody>
+                                        <tr v-for="tr in 3" :key="tr">
+                                            <td
+                                                role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
+                                                :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
+                                                v-for="td in 3" :key="td"
+                                                @click="selectField(tr + '_' + td)"
+                                            >
+                                                <div class="rc-image-tile-target">
+                                                    <!-- show whole image 9 times -->
+                                                    <img
+                                                        class="rc-image-tile-33"
+                                                        :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
+                                                        :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
+                                                    />
+                                                    <div class="rc-image-tile-overlay"></div>
                                                     <div class="rc-imageselect-checkbox"></div>
                                                 </div>
                                             </td>
@@ -149,7 +172,7 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
-import { DETECTION_TASK_PATH, SEGMENTATION_TASK_PATH } from '@/config/config';
+// import { DETECTION_TASK_PATH, SEGMENTATION_TASK_PATH } from '@/config/config';
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
@@ -163,10 +186,6 @@ export default {
         return {
             // modal
             SHOW_MODAL: false,
-
-            // task constants
-            DETECTION_TASK_PATH, // directory where each subdirectory contains images of a single class
-            SEGMENTATION_TASK_PATH, // directory containing images with multiple classes (... not implemented yet)
 
             // task
             TASK: {},
@@ -228,9 +247,49 @@ export default {
 
         async nextTask() {
             // reset
+            this.TASK = {};
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
 
+            // ------------------------------------------------------------------------ experimenting
+
+
+            // see: https://webpack.js.org/guides/dependency-management/#requirecontext
+            const filetree = require.context("@/assets/images/hcaptcha/", true, /.+/).keys()
+            const filetreeMap = filetree.reduce((acc, x) => {
+                const cls = x.replace("./", "").split("/")[0];
+                if (!acc[cls]) {
+                    acc[cls] = [];
+                }
+                acc[cls].push(x);
+                return acc;
+            }, {});
+
+            const getRandomPair = () => {
+                const keys = Object.keys(filetreeMap);
+                const key = keys[Math.floor(Math.random() * keys.length)];
+
+                const vals = filetreeMap[key];
+                const val = vals[Math.floor(Math.random() * vals.length)];
+                return [key, val];
+            };
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const [cls, img] = getRandomPair();
+                    const coord = `${i}_${j}`;
+
+                    if (!this.TASK.pairs) {
+                        this.TASK.pairs = [];
+                    }
+                    this.TASK.pairs.push([coord, img]);
+                }
+            }
+
+            console.log("task", this.TASK);
+            
+            // ------------------------------------------------------------------------ experimenting
+            
             // generate task
             const images = require.context("@/assets/images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
             const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
