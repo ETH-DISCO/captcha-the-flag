@@ -118,6 +118,7 @@
                                             >
                                                 <div class="rc-image-tile-target">
                                                     <!-- show whole image 9 times -->
+                                                    <!-- :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)" -->
                                                     <img
                                                         class="rc-image-tile-33"
                                                         :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
@@ -188,12 +189,13 @@ export default {
             SHOW_MODAL: false,
 
             // task
-            TASK: {},
-
-            FILENAME: null,
+            TASK_PAIRS: [],
+            SOLUTION_PAIRS: [],
             SEARCH_QUERY: null,
             SELECTIONS: [],
             ERROR_TYPE: "",
+
+            FILENAME: null,
             
             // styling
             IS_LOADING_MODAL: false,
@@ -247,21 +249,19 @@ export default {
 
         async nextTask() {
             // reset
-            this.TASK = {};
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
 
-            // ------------------------------------------------------------------------ experimenting
-
-
             // see: https://webpack.js.org/guides/dependency-management/#requirecontext
+            const path = "@/assets/images/hcaptcha/"
             const filetree = require.context("@/assets/images/hcaptcha/", true, /.+/).keys()
             const filetreeMap = filetree.reduce((acc, x) => {
                 const cls = x.replace("./", "").split("/")[0];
                 if (!acc[cls]) {
                     acc[cls] = [];
                 }
-                acc[cls].push(x);
+                const img = x.replace("./", path + "");
+                acc[cls].push(img);
                 return acc;
             }, {});
 
@@ -278,32 +278,25 @@ export default {
                 for (let j = 0; j < 3; j++) {
                     const [cls, img] = getRandomPair();
                     const coord = `${i}_${j}`;
-
-                    if (!this.TASK.pairs) {
-                        this.TASK.pairs = [];
-                    }
-                    this.TASK.pairs.push([coord, img]);
+                    
+                    this.TASK_PAIRS.push([coord, img]);
+                    this.SOLUTION_PAIRS.push([coord, cls]);
                 }
             }
+            console.log("task pairs", this.TASK_PAIRS);
+            console.log("solution pairs", this.SOLUTION_PAIRS);
+            
+            this.SEARCH_QUERY = this.SOLUTION_PAIRS[Math.floor(Math.random() * this.SOLUTION_PAIRS.length)][1];
+            console.log("search query", this.SEARCH_QUERY);
 
-            console.log("task", this.TASK);
             
             // ------------------------------------------------------------------------ experimenting
             
-            // generate task
             const images = require.context("@/assets/images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
             const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
-            
-            const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
-            const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
-            
             const fn = this.FILENAME;
             while (fn == this.FILENAME) {
                 this.FILENAME = getRandomImage();
-            }
-            const sq = this.SEARCH_QUERY;
-            while (sq == this.SEARCH_QUERY) {
-                this.SEARCH_QUERY = getRandomSearchQuery();
             }
 
             await randomDelay(300, 400);
