@@ -2,65 +2,63 @@
     <div>
         <p>solve me if you can!</p>
 
-        <!------------------------------------------------------------------------------- modal trigger -->
-
-        <!-- modal open button -->
-        <div style="width: 304px; height: 78px" @click="openModal" ref="container">
-            <div id="rc-anchor-alert" class="rc-anchor-alert"></div>
-            <div id="rc-anchor-container" class="rc-anchor rc-anchor-normal rc-anchor-light" style="position: relative">
-                <div id="recaptcha-accessible-status" class="rc-anchor-aria-status" aria-hidden="true">Please verify yourself.</div>
-                <div class="rc-anchor-error-msg-container" style="display: none">
-                    <span class="rc-anchor-error-msg" aria-hidden="true"></span>
-                </div>
-                <div class="rc-anchor-content">
-                    <!-- loading spinner-->
-                    <div class="rc-inline-block">
-                        <div class="rc-anchor-center-container">
-                            <div class="rc-anchor-center-item rc-anchor-checkbox-holder">
-                                <span class="recaptcha-checkbox goog-inline-block recaptcha-checkbox-unchecked rc-anchor-checkbox" role="checkbox" aria-checked="false" id="recaptcha-anchor" dir="ltr" aria-labelledby="recaptcha-anchor-label" aria-disabled="false" tabindex="0">
-                                    <div class="recaptcha-checkbox-border" role="presentation" v-show="!IS_LOADING_MODAL"></div>
-                                    <div class="recaptcha-checkbox-borderAnimation" role="presentation" :style="IS_LOADING_MODAL ? { 'background-position': '-28px -588px' } : {}"></div>
-                                    <div class="recaptcha-checkbox-spinner" role="presentation" v-show="IS_LOADING_MODAL" :style="{ 'animation-play-state': 'running', opacity: IS_LOADING_MODAL ? 1 : 0, transform: 'scale(0)' }">
-                                        <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
-                                    </div>
-                                    <div class="recaptcha-checkbox-checkmark" role="presentation"></div>
-                                </span>
+        <!-- modal logic -->
+        <section>
+            <!-- modal open button -->
+            <div style="width: 304px; height: 78px" @click="openModal" ref="container">
+                <div id="rc-anchor-alert" class="rc-anchor-alert"></div>
+                <div id="rc-anchor-container" class="rc-anchor rc-anchor-normal rc-anchor-light" style="position: relative">
+                    <div id="recaptcha-accessible-status" class="rc-anchor-aria-status" aria-hidden="true">Please verify yourself.</div>
+                    <div class="rc-anchor-error-msg-container" style="display: none">
+                        <span class="rc-anchor-error-msg" aria-hidden="true"></span>
+                    </div>
+                    <div class="rc-anchor-content">
+                        <!-- loading spinner-->
+                        <div class="rc-inline-block">
+                            <div class="rc-anchor-center-container">
+                                <div class="rc-anchor-center-item rc-anchor-checkbox-holder">
+                                    <span class="recaptcha-checkbox goog-inline-block recaptcha-checkbox-unchecked rc-anchor-checkbox" role="checkbox" aria-checked="false" id="recaptcha-anchor" dir="ltr" aria-labelledby="recaptcha-anchor-label" aria-disabled="false" tabindex="0">
+                                        <div class="recaptcha-checkbox-border" role="presentation" v-show="!IS_LOADING_MODAL"></div>
+                                        <div class="recaptcha-checkbox-borderAnimation" role="presentation" :style="IS_LOADING_MODAL ? { 'background-position': '-28px -588px' } : {}"></div>
+                                        <div class="recaptcha-checkbox-spinner" role="presentation" v-show="IS_LOADING_MODAL" :style="{ 'animation-play-state': 'running', opacity: IS_LOADING_MODAL ? 1 : 0, transform: 'scale(0)' }">
+                                            <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
+                                        </div>
+                                        <div class="recaptcha-checkbox-checkmark" role="presentation"></div>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- message -->
+                        <div class="rc-inline-block">
+                            <div class="rc-anchor-center-container">
+                                <label class="rc-anchor-center-item rc-anchor-checkbox-label" aria-hidden="true" role="presentation" id="recaptcha-anchor-label">
+                                    <span aria-live="polite" aria-labelledby="recaptcha-accessible-status"></span>
+                                    I'm not a robot
+                                </label>
                             </div>
                         </div>
                     </div>
-
-                    <!-- 'i'm not a robot' title -->
-                    <div class="rc-inline-block">
-                        <div class="rc-anchor-center-container">
-                            <label class="rc-anchor-center-item rc-anchor-checkbox-label" aria-hidden="true" role="presentation" id="recaptcha-anchor-label">
-                                <span aria-live="polite" aria-labelledby="recaptcha-accessible-status"></span>
-                                I'm not a robot
-                            </label>
+                    <!-- recaptcha logo -->
+                    <div class="rc-anchor-normal-footer">
+                        <div class="rc-anchor-logo-portrait" aria-hidden="true" role="presentation">
+                            <div class="rc-anchor-logo-img rc-anchor-logo-img-portrait"></div>
+                            <div class="rc-anchor-logo-text">reCAPTCHA</div>
+                        </div>
+                        <div class="rc-anchor-pt">
+                            <a href="https://policies.google.com/privacy?hl=en" target="_blank">Privacy</a>
+                            <span aria-hidden="true" role="presentation"> - </span>
+                            <a href="https://policies.google.com/terms?hl=en/" target="_blank">Terms</a>
                         </div>
                     </div>
                 </div>
-
-                <!-- recaptcha logo -->
-                <div class="rc-anchor-normal-footer">
-                    <div class="rc-anchor-logo-portrait" aria-hidden="true" role="presentation">
-                        <div class="rc-anchor-logo-img rc-anchor-logo-img-portrait"></div>
-                        <div class="rc-anchor-logo-text">reCAPTCHA</div>
-                    </div>
-                    <div class="rc-anchor-pt">
-                        <a href="https://policies.google.com/privacy?hl=en" target="_blank">Privacy</a>
-                        <span aria-hidden="true" role="presentation"> - </span>
-                        <a href="https://policies.google.com/terms?hl=en/" target="_blank">Terms</a>
-                    </div>
-                </div>
             </div>
-        </div>
-
-        <!-- modal close button (transparent background layer) -->
-        <div @click="SHOW_MODAL = false" style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0" v-show="SHOW_MODAL"></div>
-
-        <!------------------------------------------------------------------------------- modal -->
-
-        <div :style="MODAL_STYLE">
+            
+            <!-- modal close button (transparent background layer) -->
+            <div @click="SHOW_MODAL = false" style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0" v-show="SHOW_MODAL"></div>
+        </section>
+        
+        <!-- modal -->
+        <section :style="MODAL_STYLE">
             <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
             <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
 
@@ -68,12 +66,15 @@
                 <div id="rc-imageselect">
                     <div class="rc-imageselect-response-field"></div>
                     <span class="rc-imageselect-tabloop-begin" tabindex="0"></span>
-                    <div class="rc-imageselect-payload">
-                        <!-- task instruction -->
+                    
+                    <!-- ------------------------------------------------------------------------------------ task logic -->
+                    <main class="rc-imageselect-payload">
+                        <!-- task instructions -->
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
                                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
-                                    Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong> If there are none, click verify
+                                    Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
+                                    If there are none, click verify
                                 </div>
                             </div>
                             <div class="rc-imageselect-progress"></div>
@@ -104,35 +105,38 @@
                         <!-- error messages -->
                         <div class="rc-imageselect-incorrect-response" v-show="ERROR_TYPE == 'rc-imageselect-incorrect-response'">Please try again.</div>
                         <div class="rc-imageselect-error-select-more" v-show="ERROR_TYPE == 'rc-imageselect-error-select-more'">Please select all images that apply.</div>
-                    </div>
+                    </main>
+                    <!-- ------------------------------------------------------------------------------------ task logic -->
 
                     <!-- footer buttons -->
-                    <div class="rc-footer">
-                        <div class="rc-separator"></div>
-                        <div class="rc-controls">
-                            <div class="primary-controls">
-                                <!-- reload button -->
-                                <div class="rc-buttons">
-                                    <div class="button-holder reload-button-holder">
-                                        <button class="rc-button goog-inline-block rc-button-reload" title="Change your verification code" value="" id="recaptcha-reload-button" tabindex="0" @click="_delay_reload"></button>
+                    <footer>
+                        <div class="rc-footer">
+                            <div class="rc-separator"></div>
+                            <div class="rc-controls">
+                                <div class="primary-controls">
+                                    <!-- reload button -->
+                                    <div class="rc-buttons">
+                                        <div class="button-holder reload-button-holder">
+                                            <button class="rc-button goog-inline-block rc-button-reload" title="Change your verification code" value="" id="recaptcha-reload-button" tabindex="0" @click="_delay_reload"></button>
+                                        </div>
+                                        <div class="button-holder help-button-holder">
+                                            <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
+                                        </div>
                                     </div>
-                                    <div class="button-holder help-button-holder">
-                                        <a href="https://support.google.com/recaptcha/?hl=en" target="_blank" rel="noopener noreferrer" class="rc-button goog-inline-block rc-button-help" title="help" value="" id="recaptcha-help-button" tabindex="0"></a>
+                                    
+                                    <!-- submission button -->
+                                    <div class="verify-button-holder">
+                                        <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
                                     </div>
                                 </div>
-
-                                <!-- submission button -->
-                                <div class="verify-button-holder">
-                                    <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
-                                </div>
+                                <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
                             </div>
-                            <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
                         </div>
-                    </div>
-                    <span class="rc-imageselect-tabloop-end" tabindex="0"></span>
+                        <span class="rc-imageselect-tabloop-end" tabindex="0"></span>
+                    </footer>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -151,7 +155,7 @@ const images = require
     .map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 
-const searchQueries = ["buses", "fire hydrants", "chimneys", "mountains", "planes", "crosswalks", "bridges", "bicycles"];
+const searchQueries = ["Buses", "Fire hydrants", "Chimneys", "Mountains", "Planes", "Crosswalks", "Bridges", "Bicycles"];
 const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
 
 export default {
@@ -188,6 +192,8 @@ export default {
             await delay(300);
             this.IS_LOADING_MODAL = false;
         },
+
+        
         async _reload() {
             let _id = this.FILENAME;
             let _name = this.SEARCH_QUERY;
@@ -206,7 +212,6 @@ export default {
             this.IS_LOADING_RESULT = false;
         },
 
-        
         /*
          * task logic
          */
@@ -239,7 +244,7 @@ export default {
         },
 
         /*
-         * responsive rendering
+         * styling logic
          */
         async responsiveRender() {
             const isMobile = window.innerWidth < 470;
