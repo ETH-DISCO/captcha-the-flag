@@ -4,7 +4,7 @@
 
         <!------------------------------------------------------------------------------- modal trigger -->
 
-        <!-- open modal: click button to call openModal() -->
+        <!-- modal open button -->
         <div style="width: 304px; height: 78px" @click="openModal" ref="container">
             <div id="rc-anchor-alert" class="rc-anchor-alert"></div>
             <div id="rc-anchor-container" class="rc-anchor rc-anchor-normal rc-anchor-light" style="position: relative">
@@ -55,14 +55,14 @@
             </div>
         </div>
 
-        <!-- close modal: transparent layer behind the modal that serves as a close button -->
+        <!-- modal close button (transparent background layer) -->
         <div @click="SHOW_MODAL = false" style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0" v-show="SHOW_MODAL"></div>
 
         <!------------------------------------------------------------------------------- modal -->
 
         <div :style="MODAL_STYLE">
-            <div v-show="el_arrow" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
-            <div v-show="el_arrow" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            <div v-show="true" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            <div v-show="true" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
 
             <div id="rc-imageselect">
                 <div id="rc-imageselect">
@@ -88,7 +88,7 @@
                                             <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': list_selected.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="_select(tr + '_' + td)">
                                                 <div class="rc-image-tile-target">
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
-                                                        <img class="rc-image-tile-33" :src="require('./assets/payload/' + payload_filename)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
+                                                        <img class="rc-image-tile-33" :src="require('./assets/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                     </div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -139,7 +139,7 @@
 import "typeface-roboto";
 import delay from "delay";
 
-// todo: until nothing is selected the button says "skip" instead of "verify"
+// todo: logic and different tasks
 
 const images = require
     .context("./assets/payload", true, /^.*\.png$/)
@@ -147,7 +147,7 @@ const images = require
     .map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 
-const searchQueries = ["bus", "fire hydrant", "chimney", "mountain", "plane", "crosswalk", "bridge", "bicycle"];
+const searchQueries = ["buses", "fire hydrants", "chimneys", "mountains", "planes", "crosswalks", "bridges", "bicycles"];
 const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
 
 export default {
@@ -157,10 +157,6 @@ export default {
             SHOW_MODAL: false,
             IS_LOADING_MODAL: false,
             
-            // task
-            payload_filename: getRandomImage(),
-            SEARCH_QUERY: getRandomSearchQuery(),
-
             el_rel_loading: false,
             el_arrow: false,
             list_selected: [],
@@ -168,6 +164,9 @@ export default {
             
             is_wrong_input: "",
             
+            // task
+            FILENAME: getRandomImage(),
+            SEARCH_QUERY: getRandomSearchQuery(),
             
             // styling
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
@@ -186,10 +185,10 @@ export default {
         },
 
         async _reload() {
-            let _id = this.payload_filename;
+            let _id = this.FILENAME;
             let _name = this.SEARCH_QUERY;
-            while (_id == this.payload_filename) {
-                this.payload_filename = getRandomImage();
+            while (_id == this.FILENAME) {
+                this.FILENAME = getRandomImage();
             }
             while (_name == this.SEARCH_QUERY) {
                 this.SEARCH_QUERY = getRandomSearchQuery();
@@ -204,7 +203,7 @@ export default {
         },
 
         
-        // verify always calls showError
+        // check if solved correctly -> always calls showError
         async showError(n) {
             this.is_wrong_input = n;
             await delay(1000);
@@ -226,17 +225,18 @@ export default {
             this.list_selected.push(key);
         },
 
-        // rerender on screen resize or opening / closing modal
         async responsiveRender() {
             const isMobile = window.innerWidth < 470;
             this.el_arrow = !isMobile;
             if (isMobile) {
+                console.log("detected mobile device " + window.innerWidth + "px");
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
                 this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
+                console.log("detected desktop device " + window.innerWidth + "px");
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
                 this.TILE_SIZE_PX = 128.5;
@@ -247,7 +247,7 @@ export default {
         },
     },
 
-    // track changes in SHOW_MODAL
+    // rerender on window resize or opening modal
     watch: {
         SHOW_MODAL(value) {
             this.responsiveRender();
