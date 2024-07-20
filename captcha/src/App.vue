@@ -61,17 +61,17 @@
         <!------------------------------------------------------------------------------- modal -->
 
         <div :style="MODAL_STYLE">
-            <div v-show="true" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
-            <div v-show="true" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 11px; border-style: solid; border-color: transparent rgb(204, 204, 204) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -11px; z-index: 2000000000; top: 35px; right: 100%"></div>
+            <div v-show="IS_DESKTOP_MODE" class="g-recaptcha-bubble-arrow" style="border-width: 10px; border-style: solid; border-color: transparent rgb(255, 255, 255) transparent transparent; border-image: initial; width: 0px; height: 0px; position: absolute; pointer-events: none; margin-top: -10px; z-index: 2000000000; top: 35px; right: 100%"></div>
 
             <div id="rc-imageselect">
                 <div id="rc-imageselect">
                     <div class="rc-imageselect-response-field"></div>
                     <span class="rc-imageselect-tabloop-begin" tabindex="0"></span>
                     <div class="rc-imageselect-payload">
+                        <!-- task instruction -->
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
-                                <!-- instruction -->
                                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
                                     Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong> If there are none, click verify
                                 </div>
@@ -83,9 +83,10 @@
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
+                                    <!-- keep it this way, this can be useful for the segmentation task -->
                                     <tbody>
                                         <tr v-for="tr in 3" :key="tr">
-                                            <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': list_selected.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="_select(tr + '_' + td)">
+                                            <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                 <div class="rc-image-tile-target">
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img class="rc-image-tile-33" :src="require('./assets/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
@@ -101,10 +102,11 @@
                         </div>
 
                         <!-- error messages -->
-                        <div class="rc-imageselect-incorrect-response" v-show="is_wrong_input == 'rc-imageselect-incorrect-response'">Please try again.</div>
-                        <div class="rc-imageselect-error-select-more" v-show="is_wrong_input == 'rc-imageselect-error-select-more'">Please select all images that apply.</div>
+                        <div class="rc-imageselect-incorrect-response" v-show="ERROR_TYPE == 'rc-imageselect-incorrect-response'">Please try again.</div>
+                        <div class="rc-imageselect-error-select-more" v-show="ERROR_TYPE == 'rc-imageselect-error-select-more'">Please select all images that apply.</div>
                     </div>
 
+                    <!-- footer buttons -->
                     <div class="rc-footer">
                         <div class="rc-separator"></div>
                         <div class="rc-controls">
@@ -121,10 +123,9 @@
 
                                 <!-- submission button -->
                                 <div class="verify-button-holder">
-                                    <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': el_rel_loading }" tabindex="0" @click="verify">verify</button>
+                                    <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
                                 </div>
                             </div>
-
                             <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
                         </div>
                     </div>
@@ -157,27 +158,28 @@ export default {
     // initial state of component
     data() {
         return {
+            // modal
             SHOW_MODAL: false,
             IS_LOADING_MODAL: false,
-            
-            el_rel_loading: false,
-            el_arrow: false,
-            list_selected: [],
-
-            
-            is_wrong_input: "",
             
             // task
             FILENAME: getRandomImage(),
             SEARCH_QUERY: getRandomSearchQuery(),
+            IS_LOADING_RESULT: false,
+            SELECTIONS: [],
+            ERROR_TYPE: "",
             
             // styling
+            IS_DESKTOP_MODE: false,
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
             TILE_SIZE_PX: 126,
         };
     },
 
     methods: {
+        /*
+         * modal logic
+         */
         async openModal() {
             this.IS_LOADING_MODAL = true;
             await this._reload();
@@ -186,7 +188,6 @@ export default {
             await delay(300);
             this.IS_LOADING_MODAL = false;
         },
-
         async _reload() {
             let _id = this.FILENAME;
             let _name = this.SEARCH_QUERY;
@@ -198,47 +199,51 @@ export default {
             }
         },
         async _delay_reload() {
-            this.list_selected = [];
-            this.el_rel_loading = true;
+            this.SELECTIONS = [];
+            this.IS_LOADING_RESULT = true;
             await delay(800);
             await this._reload();
-            this.el_rel_loading = false;
+            this.IS_LOADING_RESULT = false;
         },
 
         
-        // check if solved correctly -> always calls showError
+        /*
+         * task logic
+         */
         async showError(n) {
-            this.is_wrong_input = n;
+            this.ERROR_TYPE = n;
             await delay(1000);
-            this.is_wrong_input = null;
+            this.ERROR_TYPE = null;
         },
         async verify() {
             // didn't select sufficient images
-            if (this.list_selected.length < 2) {
+            if (this.SELECTIONS.length < 2) {
                 return this.showError("rc-imageselect-error-select-more");
             }
 
             // didn't select sufficient images
-            this.el_rel_loading = true;
+            this.IS_LOADING_RESULT = true;
             await delay(1000);
 
             await this.showError("rc-imageselect-incorrect-response");
             await this._delay_reload();
         },
-
-        async _select(key) {
-            if (this.el_rel_loading) {
+        async selectField(key) {
+            if (this.IS_LOADING_RESULT) {
                 return;
             }
-            if (this.list_selected.includes(key)) {
-                return (this.list_selected = this.list_selected.filter((x) => x != key));
+            if (this.SELECTIONS.includes(key)) {
+                return (this.SELECTIONS = this.SELECTIONS.filter((x) => x != key));
             }
-            this.list_selected.push(key);
+            this.SELECTIONS.push(key);
         },
 
+        /*
+         * responsive rendering
+         */
         async responsiveRender() {
             const isMobile = window.innerWidth < 470;
-            this.el_arrow = !isMobile;
+            this.IS_DESKTOP_MODE = !isMobile;
             if (isMobile) {
                 console.log("rendering for mobile device " + window.innerWidth + "px");
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
@@ -257,8 +262,6 @@ export default {
             }
         },
     },
-
-    // rerender on window resize or opening modal
     watch: {
         SHOW_MODAL(value) {
             this.responsiveRender();
