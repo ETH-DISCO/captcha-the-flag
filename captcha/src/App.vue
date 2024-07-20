@@ -90,7 +90,7 @@
                                             <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                 <div class="rc-image-tile-target">
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
-                                                        <img class="rc-image-tile-33" :src="require('./assets/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
+                                                        <img class="rc-image-tile-33" :src="require('../images/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                     </div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -142,15 +142,17 @@
 import "typeface-roboto";
 import delay from "delay";
 
-const BASE = './assets/payload/';
-
 // todo: logic and different tasks
 // a) segmentation
 // b) object detection
 // c) object detection until none left (different button + skip button)
 
-const images = require
-    .context("./assets/payload", true, /^.*\.png$/)
+const imgs = require.context('../images/payload/', true, /^.*\.(png|jpe?g)$/)
+    .keys()
+    .map((x) => x.replace("./", ""));
+console.log(imgs);
+
+const images = require.context('../images/payload/', true, /^.*\.(png|jpe?g)$/)
     .keys()
     .map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
