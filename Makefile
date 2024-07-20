@@ -2,13 +2,19 @@
 
 .PHONY: fmt # format and remove unused imports
 fmt:
+	# python
 	pip install isort
 	isort .
+
 	pip install autoflake
 	autoflake --remove-all-unused-imports --recursive --in-place .
 
 	pip install ruff
 	ruff format --config line-length=500 .
+
+	# python javascript
+	npm install --global prettier
+	prettier . --write --print-width 500 --tab-width 4
 
 .PHONY: sec # check for common vulnerabilities
 sec:

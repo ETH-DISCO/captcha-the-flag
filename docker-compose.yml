@@ -1,17 +1,17 @@
 services:
-  captcha:
-    # run docker script from subdirectory
-    build:
-      context: ./captcha
-      dockerfile: Dockerfile
-    
-    # mount volume
-    volumes:
-      - type: bind
-        source: ./captcha
-        target: /workspace/captcha
-    working_dir: /workspace/captcha
-    
-    # map ports to host
-    ports:
-      - "8080:8080"
+    captcha:
+        # run docker script from subdirectory
+        build:
+            context: ./captcha
+            dockerfile: Dockerfile
+
+        # mount volume
+        volumes:
+            - type: bind
+              source: ./captcha
+              target: /workspace/captcha
+        working_dir: /workspace/captcha
+
+        # map ports to host
+        ports:
+            - "8080:8080"

@@ -1,24 +1,24 @@
 {
-  "name": "captcha",
-  "version": "0.1.0",
-  "description": "",
-  "author": {
-    "name": "sueszli"
-  },
-  "license": "AGPL-3.0-only",
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
-  },
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "delay": "^5.0.0",
-    "typeface-roboto": "^1.1.13",
-    "vue": "^2.6.11"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "vue-template-compiler": "^2.6.11"
-  }
+    "name": "captcha",
+    "version": "0.1.0",
+    "description": "",
+    "author": {
+        "name": "sueszli"
+    },
+    "license": "AGPL-3.0-only",
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build"
+    },
+    "dependencies": {
+        "core-js": "^3.6.5",
+        "delay": "^5.0.0",
+        "typeface-roboto": "^1.1.13",
+        "vue": "^2.6.11"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "~4.5.0",
+        "@vue/cli-service": "~4.5.0",
+        "vue-template-compiler": "^2.6.11"
+    }
 }
