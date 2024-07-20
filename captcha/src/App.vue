@@ -285,10 +285,6 @@ export default {
             
             this.SEARCH_QUERY = this.SOLUTION_PAIRS[Object.keys(this.SOLUTION_PAIRS)[Math.floor(Math.random() * Object.keys(this.SOLUTION_PAIRS).length)]];
 
-            console.log("task pairs", this.TASK_PAIRS);
-            console.log("solution pairs", this.SOLUTION_PAIRS);
-            console.log("search query", this.SEARCH_QUERY);
-
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
@@ -330,8 +326,6 @@ export default {
             if (this.SELECTIONS.includes(key)) {
                 return (this.SELECTIONS = this.SELECTIONS.filter((x) => x != key));
             }
-            console.log("selected", key);
-            console.log("selections", this.SELECTIONS);
             this.SELECTIONS.push(key);
         },
 
