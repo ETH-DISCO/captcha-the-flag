@@ -51,11 +51,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- modal close button (transparent background layer) -->
             <div @click="SHOW_MODAL = false" style="width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; z-index: 2000000000; background-color: rgb(255, 255, 255); opacity: 0" v-show="SHOW_MODAL"></div>
         </section>
-        
+
         <!-- modal -->
         <section :style="MODAL_STYLE">
             <header>
@@ -68,7 +68,6 @@
                     <div class="rc-imageselect-response-field"></div>
                     <span class="rc-imageselect-tabloop-begin" tabindex="0"></span>
                     <div class="rc-imageselect-payload">
-                        
                         <!-- task instructions -->
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
@@ -83,11 +82,10 @@
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
-                                    
-                                    <!-- images -->
                                     <tbody>
+                                        <!-- images -->
                                         <tr v-for="tr in 3" :key="tr">
-                                            <td role="button" tabindex="0" class="rc-imageselect-tile" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" aria-label="image verification" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
+                                            <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                 <div class="rc-image-tile-target">
                                                     <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
                                                         <img class="rc-image-tile-33" :src="require('../images/payload/' + FILENAME)" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" />
@@ -98,7 +96,6 @@
                                             </td>
                                         </tr>
                                     </tbody>
-
                                 </table>
                             </div>
                         </div>
@@ -147,19 +144,13 @@ import delay from "delay";
 // b) object detection
 // c) object detection until none left (different button + skip button)
 
-const imgs = require.context('../images/payload/', true, /^.*\.(png|jpe?g)$/)
-    .keys()
-    .map((x) => x.replace("./", ""));
-console.log(imgs);
-
-const images = require.context('../images/payload/', true, /^.*\.(png|jpe?g)$/)
-    .keys()
-    .map((x) => x.replace("./", ""));
+const images = require.context("../images/payload/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
 const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
 
-const searchQueries = ["Buses", "Fire hydrants", "Chimneys", "Mountains", "Planes", "Crosswalks", "Bridges", "Bicycles"];
+const searchQueries = ["airplane", "bicycle", "boat", "motorbus", "motorcycle", "seaplane", "train", "truck"];
 const getRandomSearchQuery = () => searchQueries[Math.floor(Math.random() * searchQueries.length)];
 
+const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
     // initial state of component
@@ -168,14 +159,14 @@ export default {
             // modal
             SHOW_MODAL: false,
             IS_LOADING_MODAL: false,
-            
+
             // task
             FILENAME: getRandomImage(),
             SEARCH_QUERY: getRandomSearchQuery(),
             SELECTIONS: [],
             IS_LOADING_RESULT: false,
             ERROR_TYPE: "",
-            
+
             // styling
             IS_DESKTOP_MODE: false,
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
@@ -187,59 +178,71 @@ export default {
         /*
          * modal logic
          */
+
         async openModal() {
             this.IS_LOADING_MODAL = true;
             await this.nextTask();
-            
-            await delay(150);
+
+            await randomDelay(250, 300);
             this.SHOW_MODAL = true;
-            await delay(150);
-            
+            await randomDelay(250, 300);
             this.IS_LOADING_MODAL = false;
         },
 
         /*
-        * task logic
-        */
+         * task logic
+         */
+
         async nextTask() {
+            // reset selections
             this.SELECTIONS = [];
-
             this.IS_LOADING_RESULT = true;
-            await delay(800);
-
+            
             // refresh until different
             const fn = this.FILENAME;
-            const sq = this.SEARCH_QUERY;
             while (fn == this.FILENAME) {
                 this.FILENAME = getRandomImage();
             }
+            const sq = this.SEARCH_QUERY;
             while (sq == this.SEARCH_QUERY) {
                 this.SEARCH_QUERY = getRandomSearchQuery();
             }
 
+            await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
 
         async showError(n) {
             this.ERROR_TYPE = n;
-            await delay(1000);
+            
+            await randomDelay(300, 700);
             this.ERROR_TYPE = null;
         },
+
         async verify() {
-            // didn't select sufficient images
             if (this.SELECTIONS.length < 2) {
+                console.log("didn't select sufficient images");
                 return this.showError("rc-imageselect-error-select-more");
             }
 
-            // didn't select sufficient images
             this.IS_LOADING_RESULT = true;
-            await delay(1000);
+            await randomDelay(300, 700);
 
-            await this.showError("rc-imageselect-incorrect-response");
+            // ... some logic
+
+            let isCorrect = false;
+            if (isCorrect) {
+                console.log("correct");
+            } else {
+                console.log("incorrect");
+                await this.showError("rc-imageselect-incorrect-response");
+            }
             await this.nextTask();
         },
+
         async selectField(key) {
             if (this.IS_LOADING_RESULT) {
+                console.log("already submitted selections");
                 return;
             }
             if (this.SELECTIONS.includes(key)) {
@@ -251,18 +254,17 @@ export default {
         /*
          * styling logic
          */
+
         async reRenderModal() {
             const isMobile = window.innerWidth < 470;
             this.IS_DESKTOP_MODE = !isMobile;
             if (isMobile) {
-                console.log("rendering for mobile device: " + window.innerWidth + "px width");
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
                 this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
-                console.log("rendering for desktop device: " + window.innerWidth + "px width");
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
                 this.TILE_SIZE_PX = 128.5;
