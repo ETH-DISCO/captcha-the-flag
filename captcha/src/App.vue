@@ -154,10 +154,7 @@ import { DETECTION_TASK_PATH, SEGMENTATION_TASK_PATH } from '@/config/config';
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 /*
-todo:
-a) segmentation -> harder to implement
-b) object detection -> easier to implementdo this first
-c) object detection until none left (different button + skip button)
+task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
 */
 
 export default {
@@ -234,31 +231,7 @@ export default {
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
 
-            
-            // list all subdirectories in path
-            // const ctx = require.context(this.DETECTION_TASK_PATH, true, /^\.\/[^/]+$/) 
-            // const pts = ctx.keys()
-            // const subdirs = pts.map(path => path.replace('./', ''))
-            // console.log(subdirs)
-
-
-
-
-
-
-            // const generateDetectionTask = () => {
-            // }
-
-            // const generateSegmentationTask = () => {
-            // }
-
-            // if (Math.random() < 0.5) {
-            // if (false) {
-            //     generateDetectionTask();
-            // } else {
-            //     generateSegmentationTask();
-            // }
-
+            // generate task
             const images = require.context("@/assets/images/hcaptcha/boat/", true, /^.*\.(png|jpe?g)$/).keys().map((x) => x.replace("./", ""));
             const getRandomImage = () => images[Math.floor(Math.random() * images.length)];
             
@@ -273,7 +246,6 @@ export default {
             while (sq == this.SEARCH_QUERY) {
                 this.SEARCH_QUERY = getRandomSearchQuery();
             }
-
 
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
