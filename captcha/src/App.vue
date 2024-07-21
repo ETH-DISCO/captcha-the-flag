@@ -349,6 +349,7 @@ export default {
 
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                 // ...
+
             } else {
                 console.error("task not found");
             }
