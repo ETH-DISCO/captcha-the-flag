@@ -178,17 +178,43 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
-
-/*
-task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
-*/
+import { SEGMENTATION_DIR, DETECTION_DIR } from "./config";
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
-const publicFiles = require.context('/public/images', true, /.+/);
+
+// get image directories
+// see: https://webpack.js.org/guides/dependency-management/#requirecontext
+// see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
+const publicImageDirs = require.context('/public/images', true, /.+/).keys()
+    .map(x => x.replace("./", "/public/images/"))
+    .reduce((acc, x) => {
+        const dir = x.split("/")[3];
+        if (!acc[dir]) {
+            acc[dir] = [];
+        }
+        acc[dir].push(x);
+        return acc;
+    }, {});
+const segmentationDir = publicImageDirs[SEGMENTATION_DIR]; // not sure how to find solutions for examples
+const detectionDir = publicImageDirs[DETECTION_DIR];
+console.assert(segmentationDir, "segmentation directory not found");
+console.assert(detectionDir, "detection directory not found");
+
+// detection: get target image classes by reading the directory name
+const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
+    const cls = x.replace("", "").split("/")[4];
+    if (!acc[cls]) {
+        acc[cls] = [];
+    }
+    acc[cls].push(x);
+    return acc;
+}, {});
+
+console.log(detectionFileTreeMap);
 
 export default {
-    // initial state of component
     data() {
+        // initial state of component
         return {
             // modal
             SHOW_MODAL: false,
@@ -225,9 +251,6 @@ export default {
         this.nextTask();
     },
     mounted() {
-
-        console.log(publicFiles.keys());
-
         // ran after DOM is mounted
         window.addEventListener("resize", () => {
             if (this.SHOW_MODAL) {
@@ -259,9 +282,6 @@ export default {
             // reset
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
-
-            // see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
-            // see: https://webpack.js.org/guides/dependency-management/#requirecontext
 
             const path = "/public/images/hcaptcha/"
             const filetree = require.context("/public/images/hcaptcha/", true, /.+/).keys()
