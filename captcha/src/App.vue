@@ -24,7 +24,6 @@
                                         <div class="recaptcha-checkbox-spinner" role="presentation" v-show="IS_LOADING_MODAL" :style="{ 'animation-play-state': 'running', opacity: IS_LOADING_MODAL ? 1 : 0, transform: 'scale(0)' }">
                                             <div class="recaptcha-checkbox-spinner-overlay" style="animation-play-state: running"></div>
                                         </div>
-                                        
                                         <!-- checkmark animation (disabled) -->
                                         <div class="recaptcha-checkbox-checkmark" role="presentation"></div>
                                     </span>
@@ -82,11 +81,11 @@
                             <div class="rc-imageselect-progress"></div>
                         </div>
 
+                        <!-- task -->
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
                                     
-                                    <!-- detection task -->
                                     <div v-if="TASK_TYPE == 'detection'">
                                         <tbody>
                                             <tr v-for="tr in 3" :key="tr">
@@ -110,13 +109,12 @@
                                         </tbody>
                                     </div>
 
-                                    <!-- detection task -->
                                     <div v-if="TASK_TYPE == 'detection-endless'">
 
                                     </div>
 
-                                    <!-- segmentation task (needs to be 4x4) -->
                                     <div v-if="TASK_TYPE == 'segmentation'">
+                                        <!-- (needs to be 4x4) -->
                                         <!-- <tbody>
                                             <tr v-for="tr in 3" :key="tr">
                                                 <td
@@ -290,7 +288,6 @@ export default {
             console.log("task:", task);
 
             if (task == taskEnum.DETECTION) {
-                // get target classes for each image
                 const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
                     const cls = x.split("/")[3];
                     if (!acc[cls]) {
