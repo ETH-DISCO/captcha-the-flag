@@ -86,51 +86,60 @@
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
                                     
-                                    <!-- segmentation task (needs to be 4x4) -->
-                                    <!-- <tbody>
-                                        <tr v-for="tr in 3" :key="tr">
-                                            <td
-                                                role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
-                                                :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
-                                                v-for="td in 3" :key="td"
-                                                @click="selectField(tr + '_' + td)"
-                                            >
-                                                <div class="rc-image-tile-target">
-                                                    <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
+                                    <!-- detection task -->
+                                    <div v-if="TASK_TYPE == 'detection'">
+                                        <tbody>
+                                            <tr v-for="tr in 3" :key="tr">
+                                                <td
+                                                    role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
+                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
+                                                    v-for="td in 3" :key="td"
+                                                    @click="selectField(tr + '_' + td)"
+                                                >
+                                                    <div class="rc-image-tile-target">
                                                         <img
                                                             class="rc-image-tile-33"
-                                                            :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
-                                                            :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
+                                                            :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
+                                                            :src="COORD_IMG_CLS[tr + '_' + td][0]"
                                                         />
                                                         <div class="rc-image-tile-overlay"></div>
+                                                        <div class="rc-imageselect-checkbox"></div>
                                                     </div>
-                                                    <div class="rc-imageselect-checkbox"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody> -->
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </div>
 
                                     <!-- detection task -->
-                                    <tbody>
-                                        <tr v-for="tr in 3" :key="tr">
-                                            <td
-                                                role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
-                                                :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
-                                                v-for="td in 3" :key="td"
-                                                @click="selectField(tr + '_' + td)"
-                                            >
-                                                <div class="rc-image-tile-target">
-                                                    <img
-                                                        class="rc-image-tile-33"
-                                                        :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                        :src="TASK_PAIRS[tr + '_' + td]"
-                                                    />
-                                                    <div class="rc-image-tile-overlay"></div>
-                                                    <div class="rc-imageselect-checkbox"></div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <div v-if="TASK_TYPE == 'detection-endless'">
+
+                                    </div>
+
+                                    <!-- segmentation task (needs to be 4x4) -->
+                                    <div v-if="TASK_TYPE == 'segmentation'">
+                                        <!-- <tbody>
+                                            <tr v-for="tr in 3" :key="tr">
+                                                <td
+                                                    role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
+                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
+                                                    v-for="td in 3" :key="td"
+                                                    @click="selectField(tr + '_' + td)"
+                                                >
+                                                    <div class="rc-image-tile-target">
+                                                        <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
+                                                            <img
+                                                                class="rc-image-tile-33"
+                                                                :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
+                                                                :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
+                                                            />
+                                                            <div class="rc-image-tile-overlay"></div>
+                                                        </div>
+                                                        <div class="rc-imageselect-checkbox"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody> -->
+                                    </div>    
 
                                 </table>
                             </div>
@@ -175,34 +184,40 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
-import { SEGMENTATION_DIR, DETECTION_DIR } from "./config";
+import { DETECTION_DIR, SEGMENTATION_DIR } from "./config";
 
-const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
+const taskEnum = Object.freeze({
+    DETECTION: "detection",
+    DETECTION_ENDLESS: "detection-endless",
+    SEGMENTATION: "segmentation",
+});
 
 // get image directories
 // see: https://webpack.js.org/guides/dependency-management/#requirecontext
 // see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
 const publicImageDirs = require.context('/public/images', true, /.+/).keys()
-    .map(x => x.replace("./", "/images/"))
-    .reduce((acc, x) => {
-        const dir = x.split("/")[2];
-        if (!acc[dir]) {
-            acc[dir] = [];
-        }
-        acc[dir].push(x);
-        return acc;
-    }, {});
+.map(x => x.replace("./", "/images/"))
+.reduce((acc, x) => {
+    const dir = x.split("/")[2];
+    if (!acc[dir]) {
+        acc[dir] = [];
+    }
+    acc[dir].push(x);
+    return acc;
+}, {});
+
+const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
+    // initial state
     data() {
-        // initial state of component
         return {
             // modal
             SHOW_MODAL: false,
 
             // task
-            TASK_PAIRS: {},
-            SOLUTION_PAIRS: {},
+            TASK_TYPE: null,
+            COORD_IMG_CLS: {}, // detection: { "1_1": ["path/to/image", "class"] }, segmentation: { "1_1": ["path/to/image", true/false] }
             SEARCH_QUERY: null,
             SELECTIONS: [],
             MSG_TYPE: "",
@@ -263,42 +278,54 @@ export default {
             this.IS_LOADING_RESULT = true;
 
             // load data
-            const segmentationDir = publicImageDirs[SEGMENTATION_DIR]; // not sure how to find solutions for examples
             const detectionDir = publicImageDirs[DETECTION_DIR];
-            console.assert(segmentationDir, "segmentation directory not found");
+            const segmentationDir = publicImageDirs[SEGMENTATION_DIR];
             console.assert(detectionDir, "detection directory not found");
+            console.assert(segmentationDir, "segmentation directory not found");
 
-            // -------------------------------- detection task
+            // set task type
+            // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
+            const task = taskEnum.DETECTION;
+            this.TASK_TYPE = task;
+            console.log("task:", task);
 
-            // get target classes for each image
-            const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
-                const cls = x.split("/")[3];
-                if (!acc[cls]) {
-                    acc[cls] = [];
+            if (task == taskEnum.DETECTION) {
+                // get target classes for each image
+                const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
+                    const cls = x.split("/")[3];
+                    if (!acc[cls]) {
+                        acc[cls] = [];
+                    }
+                    acc[cls].push(x);
+                    return acc;
+                }, {});
+    
+                const getRandDetectionPair = () => {
+                    const cls = Object.keys(detectionFileTreeMap)[Math.floor(Math.random() * Object.keys(detectionFileTreeMap).length)];
+                    const img = detectionFileTreeMap[cls][Math.floor(Math.random() * detectionFileTreeMap[cls].length)];
+                    return [cls, img];
+                };
+    
+                for (let i = 1; i < 4; i++) {
+                    for (let j = 1; j < 4; j++) {
+                        const [cls, img] = getRandDetectionPair();
+                        const coord = `${i}_${j}`;
+                        this.COORD_IMG_CLS[coord] = [img, cls];
+                    }
                 }
-                acc[cls].push(x);
-                return acc;
-            }, {});
+    
+                this.SEARCH_QUERY = Object.values(this.COORD_IMG_CLS)[Math.floor(Math.random() * 9)][1];
+            
+            } else if (task == taskEnum.DETECTION_ENDLESS) {
+                // ...
 
-            const getRandDetectionPair = () => {
-                const cls = Object.keys(detectionFileTreeMap)[Math.floor(Math.random() * Object.keys(detectionFileTreeMap).length)];
-                const img = detectionFileTreeMap[cls][Math.floor(Math.random() * detectionFileTreeMap[cls].length)];
-                return [cls, img];
-            };
+            } else if (task == taskEnum.SEGMENTATION) {
+                // ...
 
-            for (let i = 1; i < 4; i++) {
-                for (let j = 1; j < 4; j++) {
-                    const [cls, img] = getRandDetectionPair();
-                    const coord = `${i}_${j}`;
-                    this.TASK_PAIRS[coord] = img
-                    this.SOLUTION_PAIRS[coord] = cls;
-                }
+            } else {
+                console.error("task not found");
             }
 
-            this.SEARCH_QUERY = Object.values(this.SOLUTION_PAIRS)[Math.floor(Math.random() * this.SELECTIONS.length)];
-
-
-            
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
@@ -319,7 +346,16 @@ export default {
             this.IS_LOADING_RESULT = true;
             await randomDelay(300, 700);
             
-            const isCorrect = this.SELECTIONS.every((x) => this.SOLUTION_PAIRS[x] == this.SEARCH_QUERY);
+            let isCorrect = false;
+            if (this.TASK_TYPE == taskEnum.DETECTION || this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
+                isCorrect = this.SELECTIONS.every((x) => this.COORD_IMG_CLS[x][1] == this.SEARCH_QUERY);
+
+            } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
+                // ...
+            } else {
+                console.error("task not found");
+            }
+
             if (isCorrect) {
                 console.log("correct");
                 await this.showMsg("correct-response");
