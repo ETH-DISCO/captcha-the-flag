@@ -2,9 +2,6 @@
     <div>
         <p>solve me if you can.</p>
 
-        <!-- this is how you use the public folder to dynamically read things -->
-        <img :src="TEST" alt="">
-
         <!-- modal buttons -->
         <section>
             <!-- modal open button -->
@@ -126,7 +123,7 @@
                                                     <img
                                                         class="rc-image-tile-33"
                                                         :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                        :src="require('/public/images/hcaptcha/' + TASK_PAIRS[tr + '_' + td])"
+                                                        :src="TASK_PAIRS[tr + '_' + td]"
                                                     />
                                                     <div class="rc-image-tile-overlay"></div>
                                                     <div class="rc-imageselect-checkbox"></div>
@@ -186,32 +183,15 @@ const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a)
 // see: https://webpack.js.org/guides/dependency-management/#requirecontext
 // see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
 const publicImageDirs = require.context('/public/images', true, /.+/).keys()
-    .map(x => x.replace("./", "/public/images/"))
+    .map(x => x.replace("./", "/images/"))
     .reduce((acc, x) => {
-        const dir = x.split("/")[3];
+        const dir = x.split("/")[2];
         if (!acc[dir]) {
             acc[dir] = [];
         }
         acc[dir].push(x);
         return acc;
     }, {});
-const segmentationDir = publicImageDirs[SEGMENTATION_DIR]; // not sure how to find solutions for examples
-const detectionDir = publicImageDirs[DETECTION_DIR];
-console.log(SEGMENTATION_DIR, segmentationDir);
-console.assert(segmentationDir, "segmentation directory not found");
-console.assert(detectionDir, "detection directory not found");
-
-// detection task: get target classes for each image
-const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
-    const cls = x.replace("", "").split("/")[4];
-    if (!acc[cls]) {
-        acc[cls] = [];
-    }
-    acc[cls].push(x);
-    return acc;
-}, {});
-
-console.log(detectionFileTreeMap);
 
 export default {
     data() {
@@ -219,8 +199,6 @@ export default {
         return {
             // modal
             SHOW_MODAL: false,
-
-            TEST: "/images/hcaptcha/airplane/1650199961986_0.jpg",
 
             // task
             TASK_PAIRS: {},
@@ -284,38 +262,43 @@ export default {
             this.SELECTIONS = [];
             this.IS_LOADING_RESULT = true;
 
-            const path = "/public/images/hcaptcha/"
-            const filetree = require.context("/public/images/hcaptcha/", true, /.+/).keys()
-            const filetreeMap = filetree.reduce((acc, x) => {
-                const cls = x.replace("./", "").split("/")[0];
+            // load data
+            const segmentationDir = publicImageDirs[SEGMENTATION_DIR]; // not sure how to find solutions for examples
+            const detectionDir = publicImageDirs[DETECTION_DIR];
+            console.assert(segmentationDir, "segmentation directory not found");
+            console.assert(detectionDir, "detection directory not found");
+
+            // -------------------------------- detection task
+
+            // get target classes for each image
+            const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
+                const cls = x.split("/")[3];
                 if (!acc[cls]) {
                     acc[cls] = [];
                 }
-                const img = x.replace("./", path + "");
-                acc[cls].push(img);
+                acc[cls].push(x);
                 return acc;
             }, {});
 
-            const getRandomPair = () => {
-                const keys = Object.keys(filetreeMap);
-                const key = keys[Math.floor(Math.random() * keys.length)];
-
-                const vals = filetreeMap[key];
-                const val = vals[Math.floor(Math.random() * vals.length)];
-                return [key, val];
+            const getRandDetectionPair = () => {
+                const cls = Object.keys(detectionFileTreeMap)[Math.floor(Math.random() * Object.keys(detectionFileTreeMap).length)];
+                const img = detectionFileTreeMap[cls][Math.floor(Math.random() * detectionFileTreeMap[cls].length)];
+                return [cls, img];
             };
 
             for (let i = 1; i < 4; i++) {
                 for (let j = 1; j < 4; j++) {
-                    const [cls, img] = getRandomPair();
+                    const [cls, img] = getRandDetectionPair();
                     const coord = `${i}_${j}`;
-                    
-                    this.TASK_PAIRS[coord] = img.replace(path, "");
+                    this.TASK_PAIRS[coord] = img
                     this.SOLUTION_PAIRS[coord] = cls;
                 }
             }
+
+            this.SEARCH_QUERY = Object.values(this.SOLUTION_PAIRS)[Math.floor(Math.random() * this.SELECTIONS.length)];
+
+
             
-            this.SEARCH_QUERY = this.SOLUTION_PAIRS[Object.keys(this.SOLUTION_PAIRS)[Math.floor(Math.random() * Object.keys(this.SOLUTION_PAIRS).length)]];
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
