@@ -201,16 +201,16 @@ console.assert(segmentationDir, "segmentation directory not found");
 console.assert(detectionDir, "detection directory not found");
 
 // detection: get target image classes by reading the directory name
-const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
-    const cls = x.replace("", "").split("/")[4];
-    if (!acc[cls]) {
-        acc[cls] = [];
-    }
-    acc[cls].push(x);
-    return acc;
-}, {});
+// const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
+//     const cls = x.replace("", "").split("/")[4];
+//     if (!acc[cls]) {
+//         acc[cls] = [];
+//     }
+//     acc[cls].push(x);
+//     return acc;
+// }, {});
 
-console.log(detectionFileTreeMap);
+// console.log(detectionFileTreeMap);
 
 export default {
     data() {
