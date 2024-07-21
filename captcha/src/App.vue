@@ -314,9 +314,12 @@ export default {
                 this.SEARCH_QUERY = Object.values(this.COORD_IMG_CLS)[Math.floor(Math.random() * 9)][1];
             
             } else if (task == taskEnum.DETECTION_ENDLESS) {
+                // "Click verify once there are none left"
                 // ...
 
             } else if (task == taskEnum.SEGMENTATION) {
+                // probably easier to implement
+                // use comma seperated numbers ranging from 0-15 as the directory name
                 // ...
 
             } else {
