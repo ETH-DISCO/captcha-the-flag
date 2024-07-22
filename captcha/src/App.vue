@@ -115,19 +115,10 @@
                                         <!-- (needs to be 4x4) -->
                                         <tbody>
                                             <tr v-for="tr in 3" :key="tr">
-                                                <td
-                                                    role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
-                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
-                                                    v-for="td in 3" :key="td"
-                                                    @click="selectField(tr + '_' + td)"
-                                                >
+                                                <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                     <div class="rc-image-tile-target">
                                                         <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
-                                                            <img
-                                                                class="rc-image-tile-33"
-                                                                :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
-                                                                :src="COORD_TRUTH_IMGPATH['1_1'][1]"
-                                                            />
+                                                            <img class="rc-image-tile-33" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" :src="COORD_TRUTH_IMGPATH['1_1'][1]" />
                                                             <div class="rc-image-tile-overlay"></div>
                                                         </div>
                                                         <div class="rc-imageselect-checkbox"></div>
@@ -135,7 +126,6 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                        
                                     </div>
                                 </table>
                             </div>
@@ -209,13 +199,13 @@ export default {
         return {
             // modal states
             SHOW_MODAL: false,
-            
+
             // task states
             TASK_TYPE: null,
             COORD_TRUTH_IMGPATH: {},
             SELECTIONS: [],
             MSG_TYPE: "",
-            
+
             // styling states
             SEARCH_QUERY: null,
             IS_LOADING_MODAL: false,
@@ -278,7 +268,7 @@ export default {
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
             const task = taskEnum.SEGMENTATION;
             this.TASK_TYPE = task;
-            
+
             if (task == taskEnum.DETECTION) {
                 const detectionDir = rootDirs[DETECTION_DIR];
                 const classImgs = detectionDir.reduce((acc, x) => {
@@ -298,19 +288,20 @@ export default {
                         this.COORD_TRUTH_IMGPATH[coord] = [cls, img];
                     }
                 }
-                
+
                 this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
-                
             } else if (task == taskEnum.DETECTION_ENDLESS) {
                 const detectionDir = rootDirs[DETECTION_DIR];
                 // ...
-                
-            } else if (task == taskEnum.SEGMENTATION) {        
-                const segmentationDir = rootDirs[SEGMENTATION_DIR];        
+            } else if (task == taskEnum.SEGMENTATION) {
+                const segmentationDir = rootDirs[SEGMENTATION_DIR];
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
-                const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass)
+                const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass);
                 const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
-                const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
+                const trueCoords = rndImg
+                    .split("/")[4]
+                    .split(",")
+                    .map((x) => parseInt(x));
                 for (let i = 1; i < 5; i++) {
                     for (let j = 1; j < 5; j++) {
                         const coord = `${i}_${j}`;
@@ -320,9 +311,8 @@ export default {
                     }
                 }
                 console.log(this.COORD_TRUTH_IMGPATH["1_1"][1]);
-    
-                this.SEARCH_QUERY = rndClass;
 
+                this.SEARCH_QUERY = rndClass;
             } else {
                 console.error("task not found");
             }
