@@ -280,7 +280,7 @@ export default {
             reset();
 
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
-            const task = taskEnum.SEGMENTATION;
+            const task = taskEnum.DETECTION;
             this.TASK_TYPE = task;
 
             if (task == taskEnum.DETECTION) {
@@ -357,8 +357,8 @@ export default {
                 console.log("correct");
                 await this.showMsg("correct-response");
                 await randomDelay(800, 1200);
-                // this.SHOW_MODAL = false;
                 this.CORRECT++;
+                await this.nextTask();
             } else {
                 console.log("incorrect");
                 await this.showMsg("incorrect-response");
