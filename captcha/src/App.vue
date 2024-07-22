@@ -1,6 +1,7 @@
 <template>
     <div>
         <p>solve me if you can.</p>
+        <p>success rate: {{ CORRECT }} / {{ ATTEMPTS }}</p>
 
         <!-- modal buttons -->
         <section>
@@ -112,16 +113,32 @@
                                     <div v-if="TASK_TYPE == 'detection-endless'"></div>
 
                                     <div v-if="TASK_TYPE == 'segmentation'">
-                                        <!-- (needs to be 4x4) -->
                                         <tbody>
-                                            <tr v-for="tr in 3" :key="tr">
-                                                <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
+                                            <tr v-for="tr in 4" :key="tr">
+                                                <td
+                                                    role="button"
+                                                    tabindex="0"
+                                                    class="rc-imageselect-tile"
+                                                    aria-label="image verification"
+                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
+                                                    v-for="td in 4" :key="td" @click="selectField(tr + '_' + td)"
+                                                >
                                                     <div class="rc-image-tile-target">
-                                                        <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
-                                                            <img class="rc-image-tile-33" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" :src="COORD_TRUTH_IMGPATH['1_1'][1]" />
+                                                        <!-- don't change the outer wrapper, just the inner grid -->
+                                                        <!-- turn into a 4x4 grid -->
+                                                        <div
+                                                            class="rc-image-tile-wrapper"
+                                                            :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
+                                                        >
+                                                            <img
+                                                                class="rc-image-tile-44"
+                                                                :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
+                                                                :src="COORD_TRUTH_IMGPATH['1_1'][1]"
+                                                            />
+
                                                             <div class="rc-image-tile-overlay"></div>
+                                                            <div class="rc-imageselect-checkbox"></div>
                                                         </div>
-                                                        <div class="rc-imageselect-checkbox"></div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -155,7 +172,9 @@
                             </div>
                             <!-- submission button -->
                             <div class="verify-button-holder">
-                                <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
+                                <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">
+                                    verify
+                                </button>
                             </div>
                         </div>
                         <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
@@ -197,6 +216,10 @@ const rootDirs = require
 export default {
     data() {
         return {
+            // success rate
+            ATTEMPTS: 0,
+            CORRECT: 0,
+
             // modal states
             SHOW_MODAL: false,
 
@@ -290,18 +313,17 @@ export default {
                 }
 
                 this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
+
             } else if (task == taskEnum.DETECTION_ENDLESS) {
                 const detectionDir = rootDirs[DETECTION_DIR];
                 // ...
+
             } else if (task == taskEnum.SEGMENTATION) {
                 const segmentationDir = rootDirs[SEGMENTATION_DIR];
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
                 const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass);
                 const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
-                const trueCoords = rndImg
-                    .split("/")[4]
-                    .split(",")
-                    .map((x) => parseInt(x));
+                const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
                 for (let i = 1; i < 5; i++) {
                     for (let j = 1; j < 5; j++) {
                         const coord = `${i}_${j}`;
@@ -310,8 +332,6 @@ export default {
                         this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
                     }
                 }
-                console.log(this.COORD_TRUTH_IMGPATH["1_1"][1]);
-
                 this.SEARCH_QUERY = rndClass;
             } else {
                 console.error("task not found");
@@ -352,12 +372,14 @@ export default {
                 console.log("correct");
                 await this.showMsg("correct-response");
                 await randomDelay(800, 1200);
-                this.SHOW_MODAL = false;
+                // this.SHOW_MODAL = false;
+                this.CORRECT++;
             } else {
                 console.log("incorrect");
                 await this.showMsg("incorrect-response");
                 await this.nextTask();
             }
+            this.ATTEMPTS++;
         },
 
         async selectField(key) {
