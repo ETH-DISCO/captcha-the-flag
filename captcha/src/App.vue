@@ -78,12 +78,6 @@
                                     <div v-if="TASK_TYPE == 'detection'">
                                         Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
                                     </div>
-
-                                    <div v-if="TASK_TYPE == 'detection-endless'">
-                                        Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
-                                        Click verify once there are none left.
-                                    </div>
-
                                     <div v-if="TASK_TYPE == 'segmentation'">
                                         Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
                                     </div>
@@ -109,8 +103,6 @@
                                             </tr>
                                         </tbody>
                                     </div>
-
-                                    <div v-if="TASK_TYPE == 'detection-endless'"></div>
 
                                     <div v-if="TASK_TYPE == 'segmentation'">
                                         <tbody>
@@ -195,7 +187,6 @@ const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a)
 
 const taskEnum = Object.freeze({
     DETECTION: "detection",
-    DETECTION_ENDLESS: "detection-endless",
     SEGMENTATION: "segmentation",
 });
 
@@ -314,10 +305,6 @@ export default {
 
                 this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
 
-            } else if (task == taskEnum.DETECTION_ENDLESS) {
-                const detectionDir = rootDirs[DETECTION_DIR];
-                // ...
-
             } else if (task == taskEnum.SEGMENTATION) {
                 const segmentationDir = rootDirs[SEGMENTATION_DIR];
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
@@ -360,8 +347,6 @@ export default {
             let isCorrect = false;
             if (this.TASK_TYPE == taskEnum.DETECTION) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == this.SEARCH_QUERY);
-            } else if (this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
-                // ... no images left
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == true);
             } else {
