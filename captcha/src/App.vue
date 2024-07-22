@@ -74,8 +74,19 @@
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
                                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
-                                    Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
-                                    If there are none, click verify
+                                    <div v-if="TASK_TYPE == 'detection'">
+                                        Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
+                                        If there are none, click verify
+                                    </div>
+                                    
+                                    <div v-if="TASK_TYPE == 'detection-endless'">
+                                        
+                                    </div>
+                                    
+                                    <div v-if="TASK_TYPE == 'segmentation'">
+                                        Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
+                                        If there are none, click verify
+                                    </div>
                                 </div>
                             </div>
                             <div class="rc-imageselect-progress"></div>
@@ -190,9 +201,6 @@ const taskEnum = Object.freeze({
     SEGMENTATION: "segmentation",
 });
 
-// get image directories
-// see: https://webpack.js.org/guides/dependency-management/#requirecontext
-// see: https://stackoverflow.com/questions/40491506/vue-js-dynamic-images-not-working-with-webpack
 const publicImageDirs = require.context('/public/images', true, /.+/).keys()
 .map(x => x.replace("./", "/images/"))
 .reduce((acc, x) => {
@@ -207,8 +215,8 @@ const publicImageDirs = require.context('/public/images', true, /.+/).keys()
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
-    // initial state
     data() {
+        // initial state
         return {
             // modal
             SHOW_MODAL: false,
