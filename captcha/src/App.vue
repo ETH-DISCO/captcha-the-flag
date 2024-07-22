@@ -305,47 +305,27 @@ export default {
                 // ...
                 
             } else if (task == taskEnum.SEGMENTATION) {                
-                const segmentationDir = rootDirs[SEGMENTATION_DIR];
-                // ...
-                
+                const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
+                const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass)
+                const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
+                const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
+                console.log(trueCoords);
+    
+                for (let i = 1; i < 5; i++) {
+                    for (let j = 1; j < 5; j++) {
+                        const coord = `${i}_${j}`;
+                        const idx = (i - 1) * 4 + j - 1;
+                        const isTrue = trueCoords.includes(idx);
+                        this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
+                    }
+                }
+    
+                this.SEARCH_QUERY = rndClass;
+
             } else {
                 console.error("task not found");
             }
-            
 
-            
-            
-            // --------------------------------- experimenting
-            
-            const segmentationDir = rootDirs[SEGMENTATION_DIR];
-            const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
-            const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass)
-            const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
-            const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
-            console.log(trueCoords);
-
-            for (let i = 1; i < 5; i++) {
-                for (let j = 1; j < 5; j++) {
-                    const coord = `${i}_${j}`;
-                    const idx = (i - 1) * 4 + j - 1;
-                    const isTrue = trueCoords.includes(idx);
-                    this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
-                }
-            }
-
-            const cls = rndClass;
-            const img = rndImg;
-            
-            this.SEARCH_QUERY = rndClass;
-            
-
-            // --------------------------------- experimenting
-
-
-
-
-
-            
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
@@ -367,18 +347,15 @@ export default {
             await randomDelay(300, 700);
 
             let isCorrect = false;
-            if (this.TASK_TYPE == taskEnum.DETECTION || this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
+            if (this.TASK_TYPE == taskEnum.DETECTION) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == this.SEARCH_QUERY);
-
+            } else if (this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
+                // ... no images left
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
-                // ...
-
+                isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == true);
             } else {
                 console.error("task not found");
             }
-
-
-
 
             if (isCorrect) {
                 console.log("correct");
