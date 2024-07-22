@@ -100,7 +100,7 @@
                                             <tr v-for="tr in 3" :key="tr">
                                                 <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                     <div class="rc-image-tile-target">
-                                                        <img class="rc-image-tile-33" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }" :src="COORD_IMG_CLS[tr + '_' + td][0]" />
+                                                        <img class="rc-image-tile-33" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }" :src="COORD_TRUTH_IMGPATH[tr + '_' + td][1]" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                         <div class="rc-imageselect-checkbox"></div>
                                                     </div>
@@ -181,13 +181,16 @@ import "typeface-roboto";
 import delay from "delay";
 import { DETECTION_DIR, SEGMENTATION_DIR } from "./config";
 
+const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
+
 const taskEnum = Object.freeze({
     DETECTION: "detection",
     DETECTION_ENDLESS: "detection-endless",
     SEGMENTATION: "segmentation",
 });
 
-const publicImageDirs = require
+// webpack doesn't support dynamic require.context
+const rootDirs = require
     .context("/public/images", true, /.+/)
     .keys()
     .map((x) => x.replace("./", "/images/"))
@@ -200,26 +203,20 @@ const publicImageDirs = require
         return acc;
     }, {});
 
-console.log(require
-    .context("/public/images", true, /.+/)
-    .keys());
-
-const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
-
 export default {
     data() {
         return {
             // modal states
             SHOW_MODAL: false,
-
+            
             // task states
             TASK_TYPE: null,
-            COORD_IMG_CLS: {}, // detection: { "1_1": ["path/to/image", "class"] }, segmentation: { "1_1": ["path/to/image", true/false] }
-            SEARCH_QUERY: null,
+            COORD_TRUTH_IMGPATH: {},
             SELECTIONS: [],
             MSG_TYPE: "",
-
+            
             // styling states
+            SEARCH_QUERY: null,
             IS_LOADING_MODAL: false,
             IS_LOADING_RESULT: false,
             IS_DESKTOP_MODE: false,
@@ -270,24 +267,20 @@ export default {
          */
 
         async nextTask() {
-            // reset
-            this.SELECTIONS = [];
-            this.IS_LOADING_RESULT = true;
+            const reset = () => {
+                this.SELECTIONS = [];
+                this.IS_LOADING_RESULT = false;
+                this.MSG_TYPE = "";
+            };
+            reset();
 
-            // load data
-            const detectionDir = publicImageDirs[DETECTION_DIR];
-            const segmentationDir = publicImageDirs[SEGMENTATION_DIR];
-            console.assert(detectionDir, "detection directory not found");
-            console.assert(segmentationDir, "segmentation directory not found");
-
-            // set task type
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
             const task = taskEnum.DETECTION;
             this.TASK_TYPE = task;
-            console.log("task:", task);
-
+            
             if (task == taskEnum.DETECTION) {
-                const detectionFileTreeMap = detectionDir.reduce((acc, x) => {
+                const detectionDir = rootDirs[DETECTION_DIR];
+                const classImgs = detectionDir.reduce((acc, x) => {
                     const cls = x.split("/")[3];
                     if (!acc[cls]) {
                         acc[cls] = [];
@@ -296,35 +289,55 @@ export default {
                     return acc;
                 }, {});
 
-                const getRandDetectionPair = () => {
-                    const cls = Object.keys(detectionFileTreeMap)[Math.floor(Math.random() * Object.keys(detectionFileTreeMap).length)];
-                    const img = detectionFileTreeMap[cls][Math.floor(Math.random() * detectionFileTreeMap[cls].length)];
-                    return [cls, img];
-                };
-
                 for (let i = 1; i < 4; i++) {
                     for (let j = 1; j < 4; j++) {
-                        const [cls, img] = getRandDetectionPair();
                         const coord = `${i}_${j}`;
-                        this.COORD_IMG_CLS[coord] = [img, cls];
+                        const cls = Object.keys(classImgs)[Math.floor(Math.random() * Object.keys(classImgs).length)];
+                        const img = classImgs[cls][Math.floor(Math.random() * classImgs[cls].length)];
+                        this.COORD_TRUTH_IMGPATH[coord] = [cls, img];
                     }
                 }
-
-                this.SEARCH_QUERY = Object.values(this.COORD_IMG_CLS)[Math.floor(Math.random() * 9)][1];
-
+                
+                this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
+                
             } else if (task == taskEnum.DETECTION_ENDLESS) {
+                const detectionDir = rootDirs[DETECTION_DIR];
                 // ...
-
+                
             } else if (task == taskEnum.SEGMENTATION) {                
+                const segmentationDir = rootDirs[SEGMENTATION_DIR];
                 // ...
-
+                
             } else {
                 console.error("task not found");
             }
+            
 
-
+            
+            
             // --------------------------------- experimenting
+            
+            const segmentationDir = rootDirs[SEGMENTATION_DIR];
+            const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
+            const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass)
+            const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
+            const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
+            console.log(trueCoords);
 
+            for (let i = 1; i < 5; i++) {
+                for (let j = 1; j < 5; j++) {
+                    const coord = `${i}_${j}`;
+                    const idx = (i - 1) * 4 + j - 1;
+                    const isTrue = trueCoords.includes(idx);
+                    this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
+                }
+            }
+
+            const cls = rndClass;
+            const img = rndImg;
+            
+            this.SEARCH_QUERY = rndClass;
+            
 
             // --------------------------------- experimenting
 
@@ -340,7 +353,7 @@ export default {
         async showMsg(errorType) {
             this.MSG_TYPE = errorType;
 
-            await randomDelay(1000, 1500); // let user read
+            await randomDelay(1000, 1500);
             this.MSG_TYPE = null;
         },
 
@@ -355,12 +368,17 @@ export default {
 
             let isCorrect = false;
             if (this.TASK_TYPE == taskEnum.DETECTION || this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
-                isCorrect = this.SELECTIONS.every((x) => this.COORD_IMG_CLS[x][1] == this.SEARCH_QUERY);
+                isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == this.SEARCH_QUERY);
+
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                 // ...
+
             } else {
                 console.error("task not found");
             }
+
+
+
 
             if (isCorrect) {
                 console.log("correct");
