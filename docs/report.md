@@ -30,4 +30,5 @@ dataset aggregators:
 
 # attacks: captcha solvers
 
+-   https://github.com/aplesner/Breaking-reCAPTCHAv2 (100% success rate)
 -   https://github.com/ecthros/uncaptcha2
