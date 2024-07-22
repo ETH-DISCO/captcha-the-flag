@@ -9,3 +9,5 @@ RUN yarn config set network-timeout 600000
 
 RUN yarn install
 CMD ["yarn", "serve"]
+
+# CMD ["tail", "-f", "/dev/null"]

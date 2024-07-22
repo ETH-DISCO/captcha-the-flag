@@ -1,5 +1,7 @@
 services:
     captcha:
+        container_name: captcha
+
         # run docker script from subdirectory
         build:
             context: ./captcha
