@@ -76,16 +76,15 @@
                                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
                                     <div v-if="TASK_TYPE == 'detection'">
                                         Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
-                                        If there are none, click verify
                                     </div>
-                                    
+
                                     <div v-if="TASK_TYPE == 'detection-endless'">
-                                        
+                                        Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
+                                        Click verify once there are none left.
                                     </div>
-                                    
+
                                     <div v-if="TASK_TYPE == 'segmentation'">
-                                        Select all squares with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
-                                        If there are none, click verify
+                                        Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -96,22 +95,12 @@
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
-                                    
                                     <div v-if="TASK_TYPE == 'detection'">
                                         <tbody>
                                             <tr v-for="tr in 3" :key="tr">
-                                                <td
-                                                    role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
-                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
-                                                    v-for="td in 3" :key="td"
-                                                    @click="selectField(tr + '_' + td)"
-                                                >
+                                                <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                     <div class="rc-image-tile-target">
-                                                        <img
-                                                            class="rc-image-tile-33"
-                                                            :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                            :src="COORD_IMG_CLS[tr + '_' + td][0]"
-                                                        />
+                                                        <img class="rc-image-tile-33" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }" :src="COORD_IMG_CLS[tr + '_' + td][0]" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                         <div class="rc-imageselect-checkbox"></div>
                                                     </div>
@@ -120,9 +109,7 @@
                                         </tbody>
                                     </div>
 
-                                    <div v-if="TASK_TYPE == 'detection-endless'">
-
-                                    </div>
+                                    <div v-if="TASK_TYPE == 'detection-endless'"></div>
 
                                     <div v-if="TASK_TYPE == 'segmentation'">
                                         <!-- (needs to be 4x4) -->
@@ -148,8 +135,7 @@
                                                 </td>
                                             </tr>
                                         </tbody> -->
-                                    </div>    
-
+                                    </div>
                                 </table>
                             </div>
                         </div>
@@ -167,7 +153,7 @@
                     <div class="rc-separator"></div>
                     <div class="rc-controls">
                         <div class="primary-controls">
-                            <!-- reload button -->
+                            <!-- reset and help buttons -->
                             <div class="rc-buttons">
                                 <div class="button-holder reload-button-holder">
                                     <button class="rc-button goog-inline-block rc-button-reload" title="Change your verification code" value="" id="recaptcha-reload-button" tabindex="0" @click="nextTask"></button>
@@ -201,34 +187,35 @@ const taskEnum = Object.freeze({
     SEGMENTATION: "segmentation",
 });
 
-const publicImageDirs = require.context('/public/images', true, /.+/).keys()
-.map(x => x.replace("./", "/images/"))
-.reduce((acc, x) => {
-    const dir = x.split("/")[2];
-    if (!acc[dir]) {
-        acc[dir] = [];
-    }
-    acc[dir].push(x);
-    return acc;
-}, {});
+const publicImageDirs = require
+    .context("/public/images", true, /.+/)
+    .keys()
+    .map((x) => x.replace("./", "/images/"))
+    .reduce((acc, x) => {
+        const dir = x.split("/")[2];
+        if (!acc[dir]) {
+            acc[dir] = [];
+        }
+        acc[dir].push(x);
+        return acc;
+    }, {});
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
     data() {
-        // initial state
         return {
-            // modal
+            // modal states
             SHOW_MODAL: false,
 
-            // task
+            // task states
             TASK_TYPE: null,
             COORD_IMG_CLS: {}, // detection: { "1_1": ["path/to/image", "class"] }, segmentation: { "1_1": ["path/to/image", true/false] }
             SEARCH_QUERY: null,
             SELECTIONS: [],
             MSG_TYPE: "",
-            
-            // styling
+
+            // styling states
             IS_LOADING_MODAL: false,
             IS_LOADING_RESULT: false,
             IS_DESKTOP_MODE: false,
@@ -304,13 +291,13 @@ export default {
                     acc[cls].push(x);
                     return acc;
                 }, {});
-    
+
                 const getRandDetectionPair = () => {
                     const cls = Object.keys(detectionFileTreeMap)[Math.floor(Math.random() * Object.keys(detectionFileTreeMap).length)];
                     const img = detectionFileTreeMap[cls][Math.floor(Math.random() * detectionFileTreeMap[cls].length)];
                     return [cls, img];
                 };
-    
+
                 for (let i = 1; i < 4; i++) {
                     for (let j = 1; j < 4; j++) {
                         const [cls, img] = getRandDetectionPair();
@@ -318,9 +305,8 @@ export default {
                         this.COORD_IMG_CLS[coord] = [img, cls];
                     }
                 }
-    
+
                 this.SEARCH_QUERY = Object.values(this.COORD_IMG_CLS)[Math.floor(Math.random() * 9)][1];
-            
             } else if (task == taskEnum.DETECTION_ENDLESS) {
                 // "Click verify once there are none left"
                 // ...
@@ -340,7 +326,7 @@ export default {
 
         async showMsg(errorType) {
             this.MSG_TYPE = errorType;
-            
+
             await randomDelay(1000, 1500); // let user read
             this.MSG_TYPE = null;
         },
@@ -353,14 +339,12 @@ export default {
 
             this.IS_LOADING_RESULT = true;
             await randomDelay(300, 700);
-            
+
             let isCorrect = false;
             if (this.TASK_TYPE == taskEnum.DETECTION || this.TASK_TYPE == taskEnum.DETECTION_ENDLESS) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_IMG_CLS[x][1] == this.SEARCH_QUERY);
-
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                 // ...
-
             } else {
                 console.error("task not found");
             }
@@ -409,8 +393,8 @@ export default {
                 this.MODAL_STYLE.top = bcr.top + 2 + "px";
                 delete this.MODAL_STYLE.margin;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
