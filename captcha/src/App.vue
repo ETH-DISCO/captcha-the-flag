@@ -113,7 +113,7 @@
 
                                     <div v-if="TASK_TYPE == 'segmentation'">
                                         <!-- (needs to be 4x4) -->
-                                        <!-- <tbody>
+                                        <tbody>
                                             <tr v-for="tr in 3" :key="tr">
                                                 <td
                                                     role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification"
@@ -126,7 +126,7 @@
                                                             <img
                                                                 class="rc-image-tile-33"
                                                                 :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
-                                                                :src="require('@/assets/images/hcaptcha/boat/' + FILENAME)"
+                                                                :src="COORD_TRUTH_IMGPATH['1_1'][1]"
                                                             />
                                                             <div class="rc-image-tile-overlay"></div>
                                                         </div>
@@ -134,7 +134,8 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                        </tbody> -->
+                                        </tbody>
+                                        
                                     </div>
                                 </table>
                             </div>
@@ -275,7 +276,7 @@ export default {
             reset();
 
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
-            const task = taskEnum.DETECTION;
+            const task = taskEnum.SEGMENTATION;
             this.TASK_TYPE = task;
             
             if (task == taskEnum.DETECTION) {
@@ -304,13 +305,12 @@ export default {
                 const detectionDir = rootDirs[DETECTION_DIR];
                 // ...
                 
-            } else if (task == taskEnum.SEGMENTATION) {                
+            } else if (task == taskEnum.SEGMENTATION) {        
+                const segmentationDir = rootDirs[SEGMENTATION_DIR];        
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
                 const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass)
                 const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
                 const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
-                console.log(trueCoords);
-    
                 for (let i = 1; i < 5; i++) {
                     for (let j = 1; j < 5; j++) {
                         const coord = `${i}_${j}`;
@@ -319,6 +319,7 @@ export default {
                         this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
                     }
                 }
+                console.log(this.COORD_TRUTH_IMGPATH["1_1"][1]);
     
                 this.SEARCH_QUERY = rndClass;
 
