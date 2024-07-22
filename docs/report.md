@@ -14,6 +14,9 @@ datasets:
 
 -   https://github.com/orlov-ai/hcaptcha-dataset
 -   https://github.com/Inefficacy/Captcha-Datasets
+-   https://www.kaggle.com/datasets/mikhailma/test-dataset
+-   https://www.kaggle.com/datasets/cry2003/google-recaptcha-v2-images
+-   https://datasetninja.com/google-recaptcha-image
 
 dataset aggregators:
 
