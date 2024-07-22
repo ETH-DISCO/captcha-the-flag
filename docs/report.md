@@ -23,12 +23,12 @@ dataset aggregators:
 -   https://datasetninja.com/
 -   https://huggingface.co/datasets
 
-# defenses: captcha generators
+# attacks: captcha solvers
+
+-   https://github.com/aplesner/Breaking-reCAPTCHAv2 (100% success rate) ← best one i could find
+-   https://github.com/ecthros/uncaptcha2
+
+# defenses: image perturbators
 
 -   image detection: `torchattack`
 -   sam: https://github.com/jiahaolu97/anything-unsegmentable
-
-# attacks: captcha solvers
-
--   https://github.com/aplesner/Breaking-reCAPTCHAv2 (100% success rate)
--   https://github.com/ecthros/uncaptcha2
