@@ -200,6 +200,10 @@ const publicImageDirs = require
         return acc;
     }, {});
 
+console.log(require
+    .context("/public/images", true, /.+/)
+    .keys());
+
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 export default {
@@ -311,13 +315,24 @@ export default {
             } else if (task == taskEnum.DETECTION_ENDLESS) {
                 // ...
 
-            } else if (task == taskEnum.SEGMENTATION) {
+            } else if (task == taskEnum.SEGMENTATION) {                
                 // ...
 
             } else {
                 console.error("task not found");
             }
 
+
+            // --------------------------------- experimenting
+
+
+            // --------------------------------- experimenting
+
+
+
+
+
+            
             await randomDelay(300, 400);
             this.IS_LOADING_RESULT = false;
         },
