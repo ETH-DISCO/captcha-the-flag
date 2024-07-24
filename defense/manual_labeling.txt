@@ -95,3 +95,21 @@ path:  /traffic lights/08a1070c-9dfe-483a-af10-c699b95cda8c.jpg -> 00,01,04,05,0
 path:  /hydrants/0eadb40a-80f5-4319-855a-3985cbd7c352.jpg -> 01,02,05,06,09,10
 path:  /hydrants/d6169abd-cbf2-4832-8e8e-c4806b99e2f4.jpg -> 02,03,06,07,10,11,14,15
 path:  /buses/f50ab0ce-9901-4e43-9d35-45c6351b7881.jpg -> 00,01,02,03,04,05,06,07,08,09,10,11,12,13,14
+path:  /traffic lights/a5fb888d-e938-49e1-a874-9dc34ac076a2.jpg -> 07,11,15
+path:  /buses/3fbcb3b9-18ed-47d9-8389-f58f7d88b4c6.jpg -> 08,09,10,11,12,13,14,15
+path:  /hydrants/8a64f110-423a-492b-9a5f-d5ccf1d6cb66.jpg -> 01,02,05,06,09,10,13,14
+path:  /hydrants/064db5ee-7c38-4cb1-a81f-bf1792754048.jpg -> 01,02,05,06,09,10,13,14
+path:  /buses/3cbdef3a-3989-4526-b864-e46c73d14807.jpg -> 08,08,10
+path:  /traffic lights/2d5855ce-ce11-4aaa-aa18-d90f62ef1027.jpg -> 05,06,09,10,13,14
+path:  /hydrants/0851f35e-5374-4116-acde-1cb3e98594c9.jpg -> 01,02,05,06,09,10,13,14
+path:  /hydrants/780a671d-39f8-43fa-ac78-5c460d250a49.jpg -> 01,04,05,06,09,13,14
+path:  /buses/10f1f674-bafe-4883-a553-f79cad6cdfa9.jpg -> 04,05,06,08,09,10
+path:  /buses/e6e6e612-0687-40d1-92b1-17faa16afdc7.jpg -> 00,01,02,04,05,06
+path:  /hydrants/b66908dc-c116-4133-bdde-98a8891eee7b.jpg -> 01,02,05,06,07,09,10,12,13,14
+path:  /traffic lights/97174fc4-3337-484a-bd06-65334e3af16e.jpg -> 05,06,09,10,13,14
+path:  /buses/bd48d67b-62af-4d86-a487-c6deb52cae08.jpg -> 00,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15
+path:  /buses/fef1544c-b8aa-4e64-90c1-870f0cae86d7.jpg -> 00,01,02,03,04,05,06,07,08,09,10,11,12,13,14
+path:  /buses/36b59f2d-102e-477f-b319-90f179a519d9.jpg -> 04,05,06,08,09,10,12,13,14,15
+path:  /buses/3a06bcbc-3486-48e1-bff7-4fc173f46529.jpg -> 00,01,04,05,06,08,09,10,12,13,14,15
+path:  /palms/705c8852-13e3-4295-8a01-802325d3ded3.jpg -> 01,02,03,05,06,07,08,09,10,11,13,14
+path:  /hydrants/30949a37-ab2e-47de-a769-cae2584e1a95.jpg -> 01,05,06,09,10,12,13
