@@ -261,8 +261,7 @@ export default {
             };
             reset();
 
-            // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
-            const task = taskEnum.DETECTION;
+            const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
             this.TASK_TYPE = task;
             if (task == taskEnum.DETECTION) {
                 const detectionDir = rootDirs[DETECTION_DIR];
@@ -370,6 +369,7 @@ export default {
                     }
                 }
                 const allTrue = Object.keys(this.COORD_CLS_IMG).filter((x) => isTrue(x));
+                console.log("img path", this.COORD_CLS_IMG[key][1]);
                 console.log("selected", key, " - ", isTrue(key), " - ", allTrue);
             }
             log();
