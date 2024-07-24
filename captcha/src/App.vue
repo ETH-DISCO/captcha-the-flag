@@ -294,7 +294,6 @@ export default {
                     acc[cls].push(x);
                     return acc;
                 }, {});
-
                 for (let i = 1; i < 4; i++) {
                     for (let j = 1; j < 4; j++) {
                         const coord = `${i}_${j}`;
@@ -303,7 +302,6 @@ export default {
                         this.COORD_TRUTH_IMGPATH[coord] = [cls, img];
                     }
                 }
-
                 this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
 
             } else if (task == taskEnum.SEGMENTATION) {
@@ -322,6 +320,7 @@ export default {
                     }
                 }
                 this.SEARCH_QUERY = rndClass;
+
             } else {
                 console.error("task not found");
             }
