@@ -2,7 +2,8 @@
     <div>
         <p>solve me if you can.</p>
         <p>success rate: {{ CORRECT }} / {{ ATTEMPTS }}</p>
-        <br>
+        
+        <br />
 
         <!-- modal buttons -->
         <section>
@@ -91,12 +92,13 @@
                         <div class="rc-imageselect-challenge">
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
+
                                     <div v-if="TASK_TYPE == 'detection'">
                                         <tbody>
                                             <tr v-for="tr in 3" :key="tr">
                                                 <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
                                                     <div class="rc-image-tile-target">
-                                                        <img class="rc-image-tile-33" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }" :src="COORD_TRUTH_IMGPATH[tr + '_' + td][1]" />
+                                                        <img class="rc-image-tile-33" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }" :src="COORD_CLS_IMG[tr + '_' + td][1]" />
                                                         <div class="rc-image-tile-overlay"></div>
                                                         <div class="rc-imageselect-checkbox"></div>
                                                     </div>
@@ -108,27 +110,10 @@
                                     <div v-if="TASK_TYPE == 'segmentation'">
                                         <tbody>
                                             <tr v-for="tr in 4" :key="tr">
-                                                <td
-                                                    role="button"
-                                                    tabindex="0"
-                                                    class="rc-imageselect-tile"
-                                                    aria-label="image verification"
-                                                    :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }"
-                                                    v-for="td in 4" :key="td" @click="selectField(tr + '_' + td)"
-                                                >
+                                                <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 4" :key="td" @click="selectField(tr + '_' + td)">
                                                     <div class="rc-image-tile-target">
-                                                        <!-- don't change the outer wrapper, just the inner grid -->
-                                                        <!-- turn into a 4x4 grid -->
-                                                        <div
-                                                            class="rc-image-tile-wrapper"
-                                                            :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }"
-                                                        >
-                                                            <img
-                                                                class="rc-image-tile-44"
-                                                                :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }"
-                                                                :src="COORD_TRUTH_IMGPATH['1_1'][1]"
-                                                            />
-
+                                                        <div class="rc-image-tile-wrapper" :style="{ width: TILE_SIZE_PX + 'px', height: TILE_SIZE_PX + 'px' }">
+                                                            <img class="rc-image-tile-44" :style="{ top: '-' + (tr - 1) * 100 + '%', left: '-' + (td - 1) * 100 + '%' }" :src="COORD_CLS_IMG['1_1'][1]" />
                                                             <div class="rc-image-tile-overlay"></div>
                                                             <div class="rc-imageselect-checkbox"></div>
                                                         </div>
@@ -137,6 +122,7 @@
                                             </tr>
                                         </tbody>
                                     </div>
+
                                 </table>
                             </div>
                         </div>
@@ -165,9 +151,7 @@
                             </div>
                             <!-- submission button -->
                             <div class="verify-button-holder">
-                                <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">
-                                    verify
-                                </button>
+                                <button class="rc-button-default goog-inline-block" title="" value="" id="recaptcha-verify-button" :class="{ 'rc-button-default-disabled': IS_LOADING_RESULT }" tabindex="0" @click="verify">verify</button>
                             </div>
                         </div>
                         <div class="rc-challenge-help" style="display: none" tabindex="0"></div>
@@ -217,7 +201,7 @@ export default {
 
             // task states
             TASK_TYPE: null,
-            COORD_TRUTH_IMGPATH: {},
+            COORD_CLS_IMG: {},
             SELECTIONS: [],
             MSG_TYPE: "",
 
@@ -227,12 +211,11 @@ export default {
             IS_LOADING_RESULT: false,
             IS_DESKTOP_MODE: false,
             MODAL_STYLE: { "background-color": "rgb(255, 255, 255)", border: "1px solid rgb(204, 204, 204)", "box-shadow": " rgb(0 0 0 / 20%) 2px 2px 3px", position: "absolute", transition: "visibility 0s linear 0s, opacity 0.3s linear 0s", opacity: "1", "z-index": "2000000000", visibility: "hidden" },
-            TILE_SIZE_PX: 126,
+            TILE_SIZE_PX: 0,
         };
     },
 
     watch: {
-        // reactive properties
         SHOW_MODAL(value) {
             this.reRenderModal();
             this.MODAL_STYLE.visibility = value ? "visible" : "hidden";
@@ -241,11 +224,9 @@ export default {
         },
     },
     created() {
-        // ran before DOM is mounted
         this.nextTask();
     },
     mounted() {
-        // ran after DOM is mounted
         window.addEventListener("resize", () => {
             if (this.SHOW_MODAL) {
                 this.reRenderModal();
@@ -281,9 +262,8 @@ export default {
             reset();
 
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
-            const task = taskEnum.SEGMENTATION;
+            const task = taskEnum.DETECTION;
             this.TASK_TYPE = task;
-
             if (task == taskEnum.DETECTION) {
                 const detectionDir = rootDirs[DETECTION_DIR];
                 const classImgs = detectionDir.reduce((acc, x) => {
@@ -299,28 +279,28 @@ export default {
                         const coord = `${i}_${j}`;
                         const cls = Object.keys(classImgs)[Math.floor(Math.random() * Object.keys(classImgs).length)];
                         const img = classImgs[cls][Math.floor(Math.random() * classImgs[cls].length)];
-                        this.COORD_TRUTH_IMGPATH[coord] = [cls, img];
+                        this.COORD_CLS_IMG[coord] = [cls, img];
                     }
                 }
-                this.SEARCH_QUERY = Object.values(this.COORD_TRUTH_IMGPATH)[Math.floor(Math.random() * 9)][0];
-
+                this.SEARCH_QUERY = Object.values(this.COORD_CLS_IMG)[Math.floor(Math.random() * 9)][0];
+                this.TILE_SIZE_PX = 126;
             } else if (task == taskEnum.SEGMENTATION) {
                 const segmentationDir = rootDirs[SEGMENTATION_DIR];
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
                 const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass);
                 const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
-                let trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x))
+                let trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
                 trueCoords = [...new Set(trueCoords)];
                 for (let i = 1; i < 5; i++) {
                     for (let j = 1; j < 5; j++) {
                         const coord = `${i}_${j}`;
                         const idx = (i - 1) * 4 + j - 1;
                         const isTrue = trueCoords.includes(idx);
-                        this.COORD_TRUTH_IMGPATH[coord] = [isTrue, rndImg];
+                        this.COORD_CLS_IMG[coord] = [isTrue, rndImg];
                     }
                 }
                 this.SEARCH_QUERY = rndClass;
-
+                this.TILE_SIZE_PX = 94;
             } else {
                 console.error("task not found");
             }
@@ -347,9 +327,9 @@ export default {
 
             let isCorrect = false;
             if (this.TASK_TYPE == taskEnum.DETECTION) {
-                isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == this.SEARCH_QUERY);
+                isCorrect = this.SELECTIONS.every((x) => this.COORD_CLS_IMG[x][0] == this.SEARCH_QUERY);
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
-                isCorrect = this.SELECTIONS.every((x) => this.COORD_TRUTH_IMGPATH[x][0] == true);
+                isCorrect = this.SELECTIONS.every((x) => this.COORD_CLS_IMG[x][0] == true);
             } else {
                 console.error("task not found");
             }
@@ -376,28 +356,38 @@ export default {
             if (this.SELECTIONS.includes(key)) {
                 return (this.SELECTIONS = this.SELECTIONS.filter((x) => x != key));
             }
-            
-            console.log("selected:", key, "-", "truth:", this.COORD_TRUTH_IMGPATH[key][0]);
             this.SELECTIONS.push(key);
-        },
 
-        /*
-         * styling logic
-         */
+
+            const log = () => {
+                const isTrue = (key) => {
+                    if (this.TASK_TYPE == taskEnum.DETECTION) {
+                        return this.COORD_CLS_IMG[key][0] == this.SEARCH_QUERY;
+                    } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
+                        return this.COORD_CLS_IMG[key][0] == true;
+                    } else {
+                        console.error("task not found");
+                    }
+                }
+                const allTrue = Object.keys(this.COORD_CLS_IMG).filter((x) => isTrue(x));
+                console.log("selected", key, " - ", isTrue(key), " - ", allTrue);
+            }
+            log();
+        },
 
         async reRenderModal() {
             const isMobile = window.innerWidth < 470;
             this.IS_DESKTOP_MODE = !isMobile;
             if (isMobile) {
                 this.MODAL_STYLE.width = window.innerWidth - 5 + "px";
-                this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
+                // this.TILE_SIZE_PX = Math.floor((window.innerWidth - 5) / 3) - 7.55555;
                 this.MODAL_STYLE.left = 0;
                 this.MODAL_STYLE.right = 0;
                 this.MODAL_STYLE.margin = "auto";
             } else {
                 const bcr = this.$refs.container.getBoundingClientRect();
                 this.MODAL_STYLE.width = "408px";
-                this.TILE_SIZE_PX = 128.5;
+                // this.TILE_SIZE_PX = 128.5;
                 this.MODAL_STYLE.left = isMobile ? 0 : bcr.left + 51 + "px";
                 this.MODAL_STYLE.top = bcr.top + 2 + "px";
                 delete this.MODAL_STYLE.margin;
@@ -416,7 +406,6 @@ export default {
 }
 
 body {
-    margin-top: 10vh;
-    margin-left: 10vw;
+    margin: 10vh;
 }
 </style>

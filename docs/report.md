@@ -1,6 +1,6 @@
-task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
-
 # captcha
+
+task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
 
 captcha clones:
 
