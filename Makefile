@@ -34,7 +34,11 @@ reqs:
 up:
 	git pull
 	git add .
-	git commit -m "up"
+	@if [ -z "$(msg)" ]; then \
+		git commit -m "up"; \
+	else \
+		git commit -m "$(msg)"; \
+	fi
 	git push
 
 # --------------------------------------------------------------- docker
@@ -44,7 +48,7 @@ docker-install:
 	# @echo "to exec into docker container, run: 'docker exec -it <container-name> /bin/bash'"
 	docker-compose up --detach
 
-.PHONY: docker-clean # wipe everything in docker
+.PHONY: docker-clean # wipe docker
 docker-clean:
 	docker-compose down
 

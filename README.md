@@ -5,4 +5,3 @@
   <h3>CAPTCHA the Flag</h3>
   <p>A benchmarking tool for reCAPTCHA v2 attack and defense strategies</p>
 </p>
-

@@ -2,6 +2,7 @@
     <div>
         <p>solve me if you can.</p>
         <p>success rate: {{ CORRECT }} / {{ ATTEMPTS }}</p>
+        <br>
 
         <!-- modal buttons -->
         <section>
@@ -280,7 +281,7 @@ export default {
             reset();
 
             // const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
-            const task = taskEnum.DETECTION;
+            const task = taskEnum.SEGMENTATION;
             this.TASK_TYPE = task;
 
             if (task == taskEnum.DETECTION) {
@@ -310,7 +311,8 @@ export default {
                 const rndClass = segmentationDir[Math.floor(Math.random() * segmentationDir.length)].split("/")[3];
                 const classImgs = segmentationDir.filter((x) => x.split("/")[3] == rndClass);
                 const rndImg = classImgs[Math.floor(Math.random() * classImgs.length)];
-                const trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x));
+                let trueCoords = rndImg.split("/")[4].split(",").map((x) => parseInt(x))
+                trueCoords = [...new Set(trueCoords)];
                 for (let i = 1; i < 5; i++) {
                     for (let j = 1; j < 5; j++) {
                         const coord = `${i}_${j}`;
@@ -375,6 +377,8 @@ export default {
             if (this.SELECTIONS.includes(key)) {
                 return (this.SELECTIONS = this.SELECTIONS.filter((x) => x != key));
             }
+            
+            console.log("selected:", key, "-", "truth:", this.COORD_TRUTH_IMGPATH[key][0]);
             this.SELECTIONS.push(key);
         },
 

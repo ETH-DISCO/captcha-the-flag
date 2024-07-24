@@ -30,5 +30,5 @@ dataset aggregators:
 
 # defenses: image perturbators
 
--   image detection: `torchattack`
+-   detection: `torchattack`
 -   sam: https://github.com/jiahaolu97/anything-unsegmentable
