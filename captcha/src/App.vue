@@ -1,7 +1,7 @@
 <template>
     <div>
         <p>solve me if you can.</p>
-        <p>success rate: {{ CORRECT }} / {{ ATTEMPTS }}</p>
+        <p>accuracy: {{ CORRECT }} / {{ ATTEMPTS }}</p>
         
         <br />
 
