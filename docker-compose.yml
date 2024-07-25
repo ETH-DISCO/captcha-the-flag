@@ -2,19 +2,16 @@ services:
     captcha:
         container_name: captcha
 
-        # run docker script from subdirectory
         build:
             context: ./captcha
             dockerfile: Dockerfile
 
-        # mount volume
         volumes:
             - type: bind
               source: ./captcha
               target: /workspace/captcha
         working_dir: /workspace/captcha
 
-        # map ports to host
         ports:
             - "8080:8080"
 
@@ -24,6 +21,10 @@ services:
         build:
             context: ./attack
             dockerfile: Dockerfile
+
+        depends_on:
+            captcha:
+                condition: service_healthy
         
         volumes:
             - type: bind
@@ -37,6 +38,6 @@ services:
         stdin_open: true
         tty: true
         ipc: host
-
-        ports:
-            - '8888:8888'
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+            - NVIDIA_DRIVER_CAPABILITIES=compute,utility
