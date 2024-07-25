@@ -17,3 +17,26 @@ services:
         # map ports to host
         ports:
             - "8080:8080"
+
+    attack:
+        container_name: attack
+
+        build:
+            context: ./attack
+            dockerfile: Dockerfile
+        
+        volumes:
+            - type: bind
+              source: ./attack
+              target: /workspace/attack
+        working_dir: /workspace/attack
+
+        # config for pytorch IPC
+        # see: https://docs.docker.com/compose/gpu-support/
+        # see: https://github.com/NVIDIA/nvidia-container-toolkit?tab=readme-ov-file
+        stdin_open: true
+        tty: true
+        ipc: host
+
+        ports:
+            - '8888:8888'
