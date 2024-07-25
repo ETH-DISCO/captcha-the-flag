@@ -1,11 +1,16 @@
 # install playwright, find vpn rotation tools
 
-from fastapi import FastAPI
+import requests
+import random
+import time
+import os
 
-print("runnning main.py")
+while True:
+    # fetch localhost:8080
+    GREEN = '\033[92m'
+    RESET = '\033[0m'
 
-app = FastAPI()
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+    # response = requests.get('http://localhost:8080')
+    response = requests.get('https://google.com/')
+    print(f'{GREEN}Response:{RESET}\n{response.text}\n\n\n')
+    time.sleep(5)

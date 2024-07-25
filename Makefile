@@ -2,7 +2,6 @@
 
 .PHONY: fmt # format and remove unused imports
 fmt:
-	# python
 	pip install isort
 	isort .
 
@@ -12,7 +11,6 @@ fmt:
 	pip install ruff
 	ruff format --config line-length=500 .
 
-	# python javascript
 	npm install --global prettier
 	prettier . --write --print-width 500 --tab-width 4
 
@@ -45,14 +43,14 @@ up:
 
 .PHONY: docker-install # run docker container
 docker-install:
-	# @echo "to exec into docker container, run: 'docker exec -it <container-name> /bin/bash'"
-	docker-compose up --detach
+	# detach from container: `docker-compose up --detach`
+	# exec into container: `docker exec -it <container-name> /bin/bash`
+	docker-compose up
 
 .PHONY: docker-clean # wipe docker
 docker-clean:
 	docker-compose down
 
-	# wipe docker
 	-docker stop $$(docker ps -a -q)
 	-docker rm $$(docker ps -a -q)
 	-docker rmi $$(docker images -q)
@@ -62,7 +60,6 @@ docker-clean:
 	yes | docker network prune
 	yes | docker system prune
 	
-	# check if successful
 	docker ps --all
 	docker images
 	docker system df
