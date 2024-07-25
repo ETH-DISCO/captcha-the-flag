@@ -19,20 +19,15 @@ else:
 
 while True:
     try:
-        GREEN = '\033[92m'
-        RESET = '\033[0m'
-        
         request = urllib.request.Request(url)
         request.add_header('Host', host_header)
-        
-        # Debugging output
-        print(f'Sending request to URL: {url} with Host header: {host_header}')
-        
         contents = urllib.request.urlopen(request).read()
 
-        print(f'{GREEN}Response:{RESET}')
-        print(contents)
-        print('\n\n\n\n')
+        if contents.decode('utf-8').find('captcha') != -1:
+            GREEN = '\033[92m'
+            RESET = '\033[0m'
+            print(f'{GREEN}success:{RESET}\n{contents.decode("utf-8")}')
+
     except Exception as e:
-        print(f'Error: {e}')
-    time.sleep(1)
+        print(f'error: {e}')
+    time.sleep(3)

@@ -29,9 +29,6 @@ services:
               source: ./attack
               target: /workspace/attack
         working_dir: /workspace/attack
-
-        # read http://localhost:8080
-
         
         # config for pytorch IPC
         # see: https://docs.docker.com/compose/gpu-support/
