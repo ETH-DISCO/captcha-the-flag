@@ -16,7 +16,7 @@ Solving Google's reCAPTCHAv2 is a challenging computer vision task that tests mo
 
 This project addresses this issue by providing a reCAPTCHAv2 clone for research and evaluation purposes. Our clone is built on the same principles as the original but with some minor modifications to make it more accessible  [^diff].
 
-To get started
+To get started:
 
 1. Fork this repository
 2. Update the `./attack/main.py` file with your solver
