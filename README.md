@@ -15,6 +15,10 @@
 Solving Google's reCAPTCHAv2 with high accuracy has become an exciting computer vision challenge that lets models compete against humans on a level playing field to pass a Turing test.
 Previous solutions have shown that it is possible to achieve a success rate of 92-98% [^2] [^8] [^18] [^9] and most recently 100% as demonstrated by Plesner et al. [^16].
 
+However, the issue in trying to beat reCAPTCHAv2 remains that none of the experiments are reproducible, given that the code is not available or the dataset is not public.
+
+This repository aims to provide a reproducible environment to train and evaluate models on the reCAPTCHAv2 challenge by providing a vast dataset of over 100,000 images and a very close lookalike of reCAPTCHAv2 [^diff]
+
 # References
 
 [^2]: Björklund, Arvid and Uogele, Marius. Classifying Google reCAPTCHA v2 - A study
@@ -36,3 +40,5 @@ pages 269–284, 2020.
 [^16]: Andreas Plesner, Tobias Vontobel, and Roger Wattenhofer. Breaking recaptchav2.
 In 48th IEEE International Conference on Computers, Software, and Applications
 (COMPSAC 2024). IEEE, 2024.
+
+[^diff]: Very obvious differences being that every task must always contain a correct answer and that we have not implemented the audio challenge or the endless-object-detection task (in which the task is to stop clicking when there are no more objects to click rather than just to click all relevant objects).
