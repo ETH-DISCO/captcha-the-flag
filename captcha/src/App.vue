@@ -357,7 +357,6 @@ export default {
             }
             this.SELECTIONS.push(key);
 
-
             const log = () => {
                 const isTrue = (key) => {
                     if (this.TASK_TYPE == taskEnum.DETECTION) {
