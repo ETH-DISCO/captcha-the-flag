@@ -18,7 +18,7 @@ This project addresses this issue by providing a reCAPTCHAv2 clone [^diff] for r
 
 To get started, fork this repository, update the `./attack/main.py` file with your solver and run `make docker-install` (see: `make help`). This will launch the frontend on `localhost:8080`, allowing your solver to scrape and interact with it in a separate container.
 
-Good luck! May the best solver win.
+Good luck!
 
 # References
 
