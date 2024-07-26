@@ -12,14 +12,11 @@
 
 <br>
 
-Solving Google's reCAPTCHAv2 with high accuracy has become an exciting computer vision challenge that lets models compete against humans on a level playing field to pass a Turing test.
-Previous solutions have shown that it is possible to achieve a success rate of 92-98% [^2] [^8] [^18] [^9] and most recently 100% as demonstrated by Plesner et al. [^16].
+Solving Google's reCAPTCHAv2 is a challenging computer vision task that tests models against humans on an even playing field. While previous solutions have achieved high success rates [^2] [^8] [^18] [^9], including 100% in a recent study by Plesner et. al [^16], these results are difficult to reproduce due to (1) the closed-source nature of reCAPTCHAv2, (2) the lack of a publicly available dataset and (3) the lack of containerized environments for easy evaluation.
 
-However, the issue in trying to beat reCAPTCHAv2 remains that none of the experiments are reproducible (assuming that code is provided) because reCAPTCHAv2 is closed-source and the dataset is not publicly available.
+This project addresses this issue by providing a reCAPTCHAv2 clone [^diff] for research and evaluation purposes. Our clone is built on the same principles as the original but with modifications to make it more accessible.
 
-This project aims to change that by providing a reCAPTCHAv2 clone [^diff] for research purposes. The clone is built with the same principles as reCAPTCHAv2, but with a few modifications to make it easier to work with.
-
-To get started simply update the `./attack/main.py` file with your solver and run `make docker-install` to run the frontend on `localhost:8080` to be scraped by your solver.
+To get started, fork this repository, update the `./attack/main.py` file with your solver and run `make docker-install`. This will launch the front-end on `localhost:8080``, allowing your solver to scrape and interact with it in a separate container.
 
 # References
 
