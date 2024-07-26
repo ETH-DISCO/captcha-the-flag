@@ -1,5 +1,3 @@
-# captcha
-
 task types: https://tik-db.ee.ethz.ch/file/7243c3cde307162630a448e809054d25/#page=2
 
 captcha clones:
@@ -22,13 +20,3 @@ dataset aggregators:
 
 -   https://datasetninja.com/
 -   https://huggingface.co/datasets
-
-# attacks: captcha solvers
-
--   https://github.com/aplesner/Breaking-reCAPTCHAv2 (100% success rate) ← best one i could find
--   https://github.com/ecthros/uncaptcha2
-
-# defenses: image perturbators
-
--   detection: `torchattack`
--   sam: https://github.com/jiahaolu97/anything-unsegmentable
