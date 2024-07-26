@@ -20,8 +20,6 @@ To get started, fork this repository, update the `./attack/main.py` file with yo
 
 Good luck!
 
-# References
-
 [^2]: Björklund, Arvid and Uogele, Marius. Classifying Google reCAPTCHA v2 - A study using transfer learning models and evaluating their robustness against adversarial perturbations, 2023. Student Paper.
 
 [^8]: I Hossen, Yazhou Tu, F Rabby, Md Nazmul Islam, Hui Cao, and Xiali Hei. Bots work better than human beings: An online system to break google’s image-based recaptchav2. 2019.
