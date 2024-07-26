@@ -1,5 +1,3 @@
-# install playwright, find vpn rotation tools
-
 import urllib.request
 import os
 import time
