@@ -22,9 +22,9 @@ To get started
 2. Update the `./attack/main.py` file with your solver
 3. Run `make docker-install`
 
-  This will launch the frontend on `localhost:8080`, allowing your solver to scrape and interact with it in a separate container.
-  
-  Also see: `make help`.
+    This will launch the frontend on `localhost:8080`, allowing your solver to scrape and interact with it in a separate container.
+    
+    Also see: `make help`.
 
 Good luck!
 
