@@ -12,9 +12,9 @@
 
 <br>
 
-Solving Google's reCAPTCHAv2 is a challenging computer vision task that tests models against humans on an even playing field. While previous solutions have achieved high success rates [^2] [^8] [^18] [^9], including 100% in a recent study by Plesner et. al [^16], these results are difficult to reproduce due to (1) the closed-source nature of reCAPTCHAv2, (2) the lack of a publicly available dataset and (3) the lack of environment reproducability (ie. due to the lack of containerization).
+Solving Google's reCAPTCHAv2 is a challenging computer vision task that tests models against humans on an even playing field. While previous solutions have achieved high success rates[^2] [^8] [^18] [^9], including 100% in a recent study by Plesner et. al[^16], these results are difficult to reproduce due to (1) the closed-source nature of reCAPTCHAv2, (2) the lack of a publicly available dataset and (3) the lack of environment reproducability (ie. due to the lack of containerization).
 
-This project addresses this issue by providing a reCAPTCHAv2 clone for research and evaluation purposes. Our clone is built on the same principles as the original but with some minor modifications to make it more accessible  [^diff].
+This project addresses this issue by providing a reCAPTCHAv2 clone for research and evaluation purposes. Our clone is built on the same principles as the original but with some minor modifications to make it more accessible [^diff].
 
 To get started:
 
