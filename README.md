@@ -16,7 +16,7 @@ Solving Google's reCAPTCHAv2 is a challenging computer vision task that tests mo
 
 This project addresses this issue by providing a reCAPTCHAv2 clone [^diff] for research and evaluation purposes. Our clone is built on the same principles as the original but with modifications to make it more accessible.
 
-To get started, fork this repository, update the `./attack/main.py` file with your solver and run `make docker-install`. This will launch the front-end on `localhost:8080``, allowing your solver to scrape and interact with it in a separate container.
+To get started, fork this repository, update the `./attack/main.py` file with your solver and run `make docker-install` (see: `make help`). This will launch the frontend on `localhost:8080`, allowing your solver to scrape and interact with it in a separate container.
 
 Good luck! May the best solver win.
 
