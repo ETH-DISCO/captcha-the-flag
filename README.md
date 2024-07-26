@@ -18,6 +18,8 @@ This project addresses this issue by providing a reCAPTCHAv2 clone [^diff] for r
 
 To get started, fork this repository, update the `./attack/main.py` file with your solver and run `make docker-install`. This will launch the front-end on `localhost:8080``, allowing your solver to scrape and interact with it in a separate container.
 
+Good luck! May the best solver win.
+
 # References
 
 [^2]: Björklund, Arvid and Uogele, Marius. Classifying Google reCAPTCHA v2 - A study
