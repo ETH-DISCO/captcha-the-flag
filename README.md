@@ -42,4 +42,4 @@ Good luck!
 
 [^16]: Andreas Plesner, Tobias Vontobel, and Roger Wattenhofer. Breaking recaptchav2. In 48th IEEE International Conference on Computers, Software, and Applications (COMPSAC 2024). IEEE, 2024.
 
-[^diff]: The most significant differences: (1) In the object detection task there must always be at least one object to click, (2) the audio challenge is not implemented, (3) the endless-object-detection task is not implemented in which the task is to stop clicking when there are no more objects left to click in contrast to the original reCAPTCHAv2 where the task is to click all objects and click `Verify` when done.
+[^diff]: The most significant differences: (1) In the classification task there must always be at least one object to click, (2) the audio challenge is not implemented, (3) the endless-classification task is not implemented in which the task is to stop clicking when there are no more objects left to click in contrast to the original reCAPTCHAv2 where the task is to click all objects and click `Verify` when done.

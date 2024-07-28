@@ -77,7 +77,7 @@
                         <div class="rc-imageselect-instructions" style="margin-bottom: 7px" ref="instructions">
                             <div class="rc-imageselect-desc-wrapper">
                                 <div class="rc-imageselect-desc-no-canonical" style="font-size: 12px">
-                                    <div v-if="TASK_TYPE == 'detection'">
+                                    <div v-if="TASK_TYPE == 'classification'">
                                         Select all images with<strong style="font-size: 28px">{{ SEARCH_QUERY }}</strong>
                                     </div>
                                     <div v-if="TASK_TYPE == 'segmentation'">
@@ -93,7 +93,7 @@
                             <div id="rc-imageselect-target" class="rc-imageselect-target" dir="ltr" role="presentation" aria-hidden="true">
                                 <table class="rc-imageselect-table-33">
 
-                                    <div v-if="TASK_TYPE == 'detection'">
+                                    <div v-if="TASK_TYPE == 'classification'">
                                         <tbody>
                                             <tr v-for="tr in 3" :key="tr">
                                                 <td role="button" tabindex="0" class="rc-imageselect-tile" aria-label="image verification" :class="{ 'rc-imageselect-tileselected': SELECTIONS.includes(tr + '_' + td) }" v-for="td in 3" :key="td" @click="selectField(tr + '_' + td)">
@@ -166,12 +166,12 @@
 <script>
 import "typeface-roboto";
 import delay from "delay";
-import { DETECTION_DIR, SEGMENTATION_DIR } from "./config";
+import { CLASSIFICATION_DIR, SEGMENTATION_DIR } from "./config";
 
 const randomDelay = (a, b) => delay(Math.floor(Math.random() * (b - a + 1)) + a);
 
 const taskEnum = Object.freeze({
-    DETECTION: "detection",
+    CLASSIFICATION: "classification",
     SEGMENTATION: "segmentation",
 });
 
@@ -263,9 +263,9 @@ export default {
 
             const task = Object.values(taskEnum)[Math.floor(Math.random() * Object.values(taskEnum).length)];
             this.TASK_TYPE = task;
-            if (task == taskEnum.DETECTION) {
-                const detectionDir = rootDirs[DETECTION_DIR];
-                const classImgs = detectionDir.reduce((acc, x) => {
+            if (task == taskEnum.CLASSIFICATION) {
+                const classificationDir = rootDirs[CLASSIFICATION_DIR];
+                const classImgs = classificationDir.reduce((acc, x) => {
                     const cls = x.split("/")[3];
                     if (!acc[cls]) {
                         acc[cls] = [];
@@ -325,7 +325,7 @@ export default {
             await randomDelay(300, 700);
 
             let isCorrect = false;
-            if (this.TASK_TYPE == taskEnum.DETECTION) {
+            if (this.TASK_TYPE == taskEnum.CLASSIFICATION) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_CLS_IMG[x][0] == this.SEARCH_QUERY);
             } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                 isCorrect = this.SELECTIONS.every((x) => this.COORD_CLS_IMG[x][0] == true);
@@ -359,7 +359,7 @@ export default {
 
             const log = () => {
                 const isTrue = (key) => {
-                    if (this.TASK_TYPE == taskEnum.DETECTION) {
+                    if (this.TASK_TYPE == taskEnum.CLASSIFICATION) {
                         return this.COORD_CLS_IMG[key][0] == this.SEARCH_QUERY;
                     } else if (this.TASK_TYPE == taskEnum.SEGMENTATION) {
                         return this.COORD_CLS_IMG[key][0] == true;
