@@ -47,6 +47,10 @@ docker-install:
 	# exec into container: `docker exec -it <container-name> /bin/bash`
 	docker-compose up
 
+.PHONY: docker-build # build docker container
+docker-build:
+	docker-compose build
+
 .PHONY: docker-clean # wipe docker
 docker-clean:
 	docker-compose down

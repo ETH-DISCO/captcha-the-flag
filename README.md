@@ -23,6 +23,8 @@ To get started:
 3. Run `make docker-install`
 
     This will launch the frontend on `localhost:8080`, allowing your solver to scrape and interact with it in a separate container.
+
+    The compile time depends on the datset size and the number of workers. Don't be alarmed if it takes a while.
     
     Also see: `make help`.
 

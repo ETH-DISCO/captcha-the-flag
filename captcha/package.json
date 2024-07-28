@@ -1,24 +1,26 @@
 {
     "name": "captcha-the-flag",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "",
     "author": {
         "name": "sueszli"
     },
     "license": "AGPL-3.0-only",
     "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build"
+        "serve": "./node_modules/.bin/vue-cli-service serve",
+        "build": "./node_modules/.bin/vue-cli-service build"
     },
     "dependencies": {
-        "core-js": "^3.6.5",
-        "delay": "^6.0.0",
-        "typeface-roboto": "^1.1.13",
-        "vue": "^3.4.33"
+        "npm-check": "^6.0.1"
     },
     "devDependencies": {
+        "@vue/cli-service": "^5.0.8",
+        "@vue/cli": "^5.0.8",
         "@vue/cli-plugin-babel": "~5.0.8",
-        "@vue/cli-service": "~5.0.8",
-        "vue-template-compiler": "^2.6.11"
+        "core-js": "^3.37.1",
+        "delay": "^6.0.0",
+        "typeface-roboto": "^1.1.13",
+        "vue": "^3.4.34",
+        "vue-template-compiler": "^2.7.16"
     }
 }
