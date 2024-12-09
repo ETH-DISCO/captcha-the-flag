@@ -30,8 +30,6 @@ To get started:
 
 Good luck!
 
-<br>
-
 # References
 
 [^2]: Björklund, Arvid and Uogele, Marius. Classifying Google reCAPTCHA v2 - A study using transfer learning models and evaluating their robustness against adversarial perturbations, 2023. Student Paper.
